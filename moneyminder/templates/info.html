@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .main-content,
+      .header-main {
+        display: none;
+      }
+      .logo {
+        display: block; /* Make it a block-level element for centering */
+        margin: 0 auto; /* Center-align the logo */
+        max-width: 80%; /* Set the maximum width for responsiveness */
+        height: 10%;
+        width: 40%;
+        padding-top: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    
+    <div class="initial-form-container">
+      <img class="logo" src="{% static 'logo.png' %}">
+      <h2>Welcome to Money Minder! Let's set up your initial details.</h2>
+      <form id="initial-form" method='post' action="">
+        {% csrf_token %}
+        <label for="income">What is your income?</label>
+        <input type="number" id="income" name="income" required />
+
+        <label for="expenses">What is your estimated monthly expenses?</label>
+        <input type="number" id="expenses" name="expense" required />
+
+        <label for="saving goal">What is your saving goal?</label>
+        <input type="number" id="saving" name="saving_goal" required />
+
+        <button type="submit" >Submit</button>
+      </form>
+    </div>
+</body>
+</html>
+
+{% comment %} <a href="{% url 'user_logout' %}">logout here</a> {% endcomment %}
