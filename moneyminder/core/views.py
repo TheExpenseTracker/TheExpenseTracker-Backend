@@ -37,6 +37,10 @@ def index(request):
     
     
     monthly_expense = Monthly_Expense.objects.filter(user=request.user).first()
+    income__amount = Income_sources.objects.filter(user=request.user)
+    total = sum(p.amount for p in income__amount)
+    # updated_balance = float(total) - float(monthly_expense.exp_amt)
+    # print(updated_balance)
     selected_income = request.session.get('selected_income')
     total_income = request.session.get('total_income')
     total_expense = request.session.get('total_expense')
@@ -48,7 +52,8 @@ def index(request):
         'is_first_login': is_first_login,
         'selected_income': selected_income,
         'total_income': total_income,
-        'total_expense': total_expense
+        'total_expense': total_expense,
+        # 'updated_balance' :updated_balance,
         
     }
     
@@ -102,19 +107,19 @@ def my_login(request):
 
     return render(request, 'signin.html', context=context)
 @login_required(login_url='my_login')
-def info (request):
-    user = request.user
-    category = Category.objects.earliest('created_at')
-    if request.method == 'POST':
-        income = request.POST['income']
-        expense = request.POST['expense']
-        saving_goal = request.POST['saving_goal']
-        inc = Income.objects.create(user = user , income = income , saving_goal = saving_goal)
-        inc.save()
-        exp = Expense.objects.create(user = user , ex_amount = expense , category = category , remark = 'First' , bill_image = None , payment_method = 0)
-        exp.save()
-        return redirect('home')
-    return render(request , 'info.html')
+# def info (request):
+#     user = request.user
+#     category = Category.objects.earliest('created_at')
+#     if request.method == 'POST':
+#         income = request.POST['income']
+#         expense = request.POST['expense']
+#         saving_goal = request.POST['saving_goal']
+#         inc = Income.objects.create(user = user , income = income , saving_goal = saving_goal)
+#         inc.save()
+#         exp = Expense.objects.create(user = user , ex_amount = expense , category = category , remark = 'First' , bill_image = None , payment_method = 0)
+#         exp.save()
+#         return redirect('home')
+#     return render(request , 'info.html')
 
 
 
@@ -171,12 +176,24 @@ def allert(user_email , alert , custom_text):
             
 
 def save_income(request):
+
     if request.method == 'POST':
         user = request.user
+        t = Monthly_Expense.objects.filter(user=user)
+        u = Income_sources.objects.filter(user=user)
+        v = saving_goal.objects.filter(user=user)
+        if t.exists():
+            t.delete()
+        if u.exists():
+            u.delete()
+        if v.exists():
+            v.delete()
+            
         exp_amt = request.POST.get('exp_amt')
-        saving_goal = request.POST.get('saving')
+        saving_goals = request.POST.get('saving_goal')
         num_incomes = request.POST.get('numIncomes',0)
         Monthly_Expense.objects.create(user= user  , exp_amt = exp_amt)
+        saving_goal.objects.create(user= user , goal = saving_goals)
         try:
             num_incomes = int(num_incomes)
         except ValueError:
@@ -193,8 +210,25 @@ def save_income(request):
 
 
 
+def update_values(request):
+    user = request.user
+    count = count_sources_for_user(user)
+    m=Monthly_Expense.objects.get(user=user)
+    c = m.exp_amt
+    d = saving_goal.objects.get(user = user)
+    # for i in range(1,count+1):  
+    #     s = Income_sources.objects.get(user=user)
+        
+    #     i=i+1
+    #     return render(request , 'update.html',{'count':count,'c':c , 'd':d , 's':s})
+
+    return render(request , 'update.html',{'count':count,'c':c , 'd':d})
 
 
+def count_sources_for_user(user):
+    
+    sources_count = Income_sources.objects.filter(user=user).count()
+    return sources_count
 def update_income_amount_view(request):
     user = request.user
     income_source_id = request.GET.get('income_source_id')

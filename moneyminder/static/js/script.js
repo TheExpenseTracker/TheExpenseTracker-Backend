@@ -208,9 +208,9 @@ function generateIncomeFields() {
     incomeContainer.innerHTML += `
       <div>
           <label for="incomeSource${i}">Income Source ${i}:</label>
-          <input type="text" id="incomeSource${i}" name="incomeSource${i}" required>
+          <input type="text" id="incomeSource${i}" name="incomeSource${i}" value="{{ s.source }}" required>
           <label for="incomeAmount${i}">Income Amount ${i}:</label>
-          <input type="text" id="incomeAmount${i}" name="incomeAmount${i}" required>
+          <input type="text" id="incomeAmount${i}" name="incomeAmount${i}" value="{{ s.amount }}" required>
       </div>
       `;
   }

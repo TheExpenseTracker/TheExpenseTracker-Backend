@@ -110,7 +110,7 @@
                             <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
                         </button>
                         <div class="language-container">
-                            <a class="EN">Settings</a>
+                            <a class="EN" href="{% url 'updated_values' %}">Settings</a>
                             <a class="down-arrow">⌄</a>
                         </div>
 
@@ -168,6 +168,7 @@
         
         <h4>Your Balance</h4>
         <h1 <span id="balance"></span></h1>
+        
         <div class="inc-exp-container">
             <div>
                 <h4>Income</h4>
@@ -257,14 +258,14 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('money-plus').innerText = data.income_amount;
             document.getElementById('money-minus').innerText = data.expense_amount;
             updateBalance();
-        });
+        }); 
 
 });
 function updateBalance() {
     var incomeAmount = parseFloat(document.getElementById('money-plus').innerText);
     var expenseAmount = parseFloat(document.getElementById('money-minus').innerText); // Fixed expense amount
     var balance = incomeAmount - expenseAmount;
-    document.getElementById('balance').innerText = 'Rs.' + balance.toFixed(2);
+    document.getElementById('balance').innerText = + balance.toFixed(2);
 }
 updateBalance();
 </script>

@@ -79,3 +79,6 @@ class Transaction(models.Model):
     def __str__(self):
         return self.text
     
+class saving_goal(models.Model):
+    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    goal = models.FloatField()
