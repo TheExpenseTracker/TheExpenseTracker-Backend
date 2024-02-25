@@ -54,3 +54,28 @@ class custom_alert(TimeStampModel):
     user = models.ForeignKey(User, on_delete= models.CASCADE)
     custom_text = models.CharField(max_length = 200)
     date = models.DateField()
+
+
+
+class Income_sources(models.Model):
+    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    source = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    def __str__(self):
+        return self.source
+
+
+class Monthly_Expense(models.Model):
+    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    exp_amt = models.FloatField()
+
+
+class Transaction(models.Model):
+    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    income_source = models.ForeignKey(Income_sources , on_delete = models.CASCADE)
+    text = models.CharField(max_length = 255)
+    amount = models.DecimalField(max_digits = 10 , decimal_places = 2) 
+
+    def __str__(self):
+        return self.text
+    

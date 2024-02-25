@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,4 +11,266 @@
     </a> </button>
     
 </body>
+</html> {% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <link rel="stylesheet" href="{% static 'popup.css' %}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .initial-form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%;
+            height: 10%;
+            width: 40%;
+            padding-top: 0;
+        }
+
+        #incomeFields div {
+            margin-bottom: 10px;
+        }
+
+        .header-main,
+        .main-content {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-logo">
+                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+                </a>
+
+                <!--  <div class="header-search-container">
+                    <input type="search" name="search" class="search-field" placeholder="Search" />
+
+                    <button class="search-btn">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </button> 
+                </div> -->
+                <div class="actions">
+                    <div class="header-user-actions">
+                        <button class="action-btn">
+                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                        </button>
+                        <button>
+                            <a class="home" href="index.html">Home</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                          <a class="emi-text" href="try.html">Calculator</a>
+                      </button>
+                      
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="alert" href="custom.html">Custom Alert</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                            <a class="faq-text">FAQ</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="login-text">Login</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="signup-text">SignUp</a>
+                        </button>
+                        <button class="lang-button">
+                            <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
+                        </button>
+                        <div class="language-container">
+                            <a class="EN">Settings</a>
+                            <a class="down-arrow">⌄</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-bottom-navigation">
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="bag-handle-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="home-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="heart-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="grid-outline"></ion-icon>
+            </button>
+        </div>
+    </header>
+     <!-- Popup Container -->
+     {% comment %} <div class="popup-container" id="popupContainer">
+      <div class="popup" id="popup">
+          <img src="{% static 'assets/tick.png' %}">
+          <h2>Thank You!</h2>
+          <p>Your details have been successfully submitted. Thanks</p>
+          <button type="button" onclick="closePopup()">OK</button>
+      </div> {% endcomment %}
+  </div>
+
+    
+    
+    <div class="main-content">
+      <div class="container">
+        <form method="GET">
+            <label for="income_source">Select Income Source:</label>
+            <select name="income_source_id" id="income_source">
+                <option value="">Select an Income Source</option>
+                {% for income_source in income_sources %}
+                    <option value="{{ income_source.id }}" {% if income_source.id == selected_income_source.id %}selected{% endif %}>{{ income_source.source }}</option>
+                {% endfor %}
+            </select>
+           
+        </form>
+        
+        <h4>Your Balance</h4>
+        <h1 <span id="balance"></span></h1>
+        <div class="inc-exp-container">
+            <div>
+                <h4>Income</h4>
+                <p id="money-plus" class="money-plus">
+                    {{ selected_income }}
+                </p>
+            </div>
+            <div>
+                <h4>Expense</h4>
+                <p id="money-minus" class="money-minus">
+                    -{{total_expense}}
+                </p>
+            </div>
+            <div>
+                <h4>Saving Goal</h4>
+                <p id="saving-goal" class="saving-goal">
+                    $0.00
+                </p>
+            </div>
+        </div>
+    
+        <h3>History</h3>
+        <ul id="list" class="list">
+            <!-- <li class="minus">
+              Cash <span>-$400</span
+              ><button class="delete-btn">x</button>
+            </li> -->
+        </ul>
+        <h3>Add New Transaction</h3>
+        {% comment %} <form id="form"> {% endcomment %}
+            <div class="form-control">
+                <label for="text">Text</label>
+                <input type="text" name = "text1" id="text" placeholder="Enter Text...."/>
+            </div>
+            <div class="form-control">
+                <label for="amount">Amount <br> (negative - expense ,positive - income )</label>
+                <input type="number" name = "amount1" id="amount" placeholder="Enter amount..."> 
+            </div>
+            <button type="button" class="btn-add" onclick='addTransaction()'>Add transaction</button>
+
+        {% comment %} </form> {% endcomment %}
+    </div>
+    </div>
+    {% if is_first_login %}
+    <div class="initial-form-container">
+        <img class="logo" src="{% static 'assets/logo.png' %}">
+        <h2>Welcome to Money Minder! Let's set up your initial details.</h2>
+        <form id="initial-form" method = 'POST' action='{% url "save_income" %}'>
+            {% csrf_token %}    
+            <label for="numIncomes">Number of Income Sources:</label>
+            <input type="number" name = "numIncomes"id="numIncomes" min="1" max="100" required>
+            <div id="incomeFields">
+                <div id="incomeContainer"></div>
+            </div>
+
+            <label for="monthlyExpenses">Monthly Expense:</label>
+            <input type="number" name="exp_amt" id="monthlyExpenses" min="0" placeholder="Enter Monthly Expenses" required />
+            <!-- End of added portion -->
+            <label for="saving">Saving Goal (Percentage):</label>
+            <input type="number" name="saving_goal" id="saving" min="1" max="100" placeholder="Enter Saving Goal in %" required />
+            <button type="button" id="nextButton" onclick="generateIncomeFields()">Next</button>
+            {% comment %} <button type="submit" id="submitButton" style="display: none;" onclick="submitForm()">Submit</button> {% endcomment %}
+            <button type="submit" id="submitButton" style="display: none;" onclick = "submitForm()">Submit</button>
+        </form>
+    </div>
+    {% else %}
+    <script>
+        document.querySelector(".main-content").style.display = "block";
+    </script>
+    {% endif %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('show_elements')) {
+      document.querySelector(".header-main").style.display = "block";
+      document.querySelector(".main-content").style.display = "block";
+      document.querySelector(".initial-form-container").style.display = "none";
+    }
+  }); 
+  document.getElementById('income_source').addEventListener('change', function() {
+    var incomeSourceId = this.value;
+    fetch('/update_income_amount/?income_source_id=' + incomeSourceId)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('money-plus').innerText = data.income_amount;
+            document.getElementById('money-minus').innerText = data.expense_amount;
+            updateBalance();
+        });
+
+});
+function updateBalance() {
+    var incomeAmount = parseFloat(document.getElementById('money-plus').innerText);
+    var expenseAmount = parseFloat(document.getElementById('money-minus').innerText); // Fixed expense amount
+    var balance = incomeAmount - expenseAmount;
+    document.getElementById('balance').innerText = 'Rs.' + balance.toFixed(2);
+}
+updateBalance();
+</script>
+<script src="{% static 'js/script.js' %}"></script>
+
+
+</body>
+
 </html>

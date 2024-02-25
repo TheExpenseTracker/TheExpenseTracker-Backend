@@ -135,7 +135,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
     
 ]
-STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -147,8 +147,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/'
-
+LOGIN_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 REST_FRAMEWORK = {
@@ -159,7 +158,7 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_URL = '/admin/login/'
-
+SESSION_COOKIE_HTTPONLY = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -167,3 +166,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sakarbhandari100000@gmail.com'
 EMAIL_HOST_PASSWORD = 'fzcl laqb vruq gaws'
+
+SOCIALACCOUNT_LOGIN_ON_GET=True

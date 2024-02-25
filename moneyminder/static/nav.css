@@ -1,10 +1,10 @@
-*,
+/* *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
+} */
 
 a {
   text-decoration: none;
@@ -36,9 +36,9 @@ input {
   font: inherit;
 }
 
-body {
+/* body {
   background: white;
-}
+} */
 
 /* .header-user-actions {
   display: none;
@@ -87,7 +87,24 @@ body {
   z-index: 1111;
 }
 
+.home{
+  font-size: 14px;
+  font-weight: bold;
+  position: relative;
+  bottom: 1px;
+  margin-left: 5px;
+  color: white;
+
+}
 .emi-text {
+  font-size: 14px;
+  font-weight: bold;
+  position: relative;
+  bottom: 1px;
+  margin-left: 5px;
+  color: white;
+}
+.alert{
   font-size: 14px;
   font-weight: bold;
   position: relative;
@@ -243,7 +260,7 @@ body {
 }
 @media (min-width: 900px) {
   .container {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .mobile-bottom-navigation {

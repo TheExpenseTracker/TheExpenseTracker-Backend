@@ -73,6 +73,48 @@
 			padding: 10px;
 			margin-top: 10px;
 		}
+		.buttons-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 20vh;
+		  }
+		  .google-button, .github-button {
+			display: inline-block;
+			background-color: #FFFFFF; /* Button background color */
+			color: #000000; /* Button text color */
+			text-decoration: none;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			padding: 12px 24px;
+			border-radius: 6px;
+			margin-bottom: 12px;
+			transition: background-color 0.3s ease;
+			background-repeat: no-repeat;
+			background-position: 10px 50%;
+			background-size: 24px 24px;
+			padding-left: 44px; /* Adjust based on icon size */
+		  }
+		  
+		  .google-button {
+			background-color: #ffffff; /* Google Button background color */
+			background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png');
+		  }
+		  
+		  .github-button {
+			background-color: #FFFFFF; /* GitHub Button background color */
+			background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg');
+		  }
+		  
+		  .google-button:hover {
+			background-color: #2535e7e0; /* Button hover background color */
+		  }
+		  .github-button:hover {
+			background-color: #3b3a3a; /* Button hover background color */
+		  }
+		  
+		  
 	</style>
 
 </head>
@@ -116,16 +158,12 @@
 					</div>
 
 					<!-- Google button starts here -->
-    <a href="{% provider_login_url 'google' %}" class="btn btn-primary">
-		<i class="fa fa-google fa-fw"></i>
-		<span>Login with Google</span>
-	  </a>
-	  
-	  <!-- GitHub button starts here -->
-	  <a href="{% provider_login_url 'github' %}" class="btn btn-primary">
-		<i class="fa fa-github fa-fw"></i>
-		<span>Login with GitHub</span>
-	  </a>
+    
+	  <div class="buttons-container">
+		<a href="{% provider_login_url 'google' %}" class="google-button">Continue with Google</a>
+		<a href="{% provider_login_url 'github' %}"class="github-button">Continue with GitHub</a>
+	  </div>
+
 			
 				</div>
 			</div>
