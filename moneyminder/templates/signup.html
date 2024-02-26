@@ -141,6 +141,7 @@
 
 <!DOCTYPE html>
 <html>
+	{% load static %}
     {% load socialaccount %}
 <head>
 	<title>Login</title>
@@ -148,7 +149,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
-	<style>
+
+	<style>-
 		body,
 		html {
 			margin: 0;
@@ -157,7 +159,8 @@
 			background: #7abecc !important;
 		}
 		.user_card {
-			width: 350px;
+			
+			height: 80%; /* Increase the height */
 			margin-top: auto;
 			margin-bottom: auto;
 			background: #74cfbf;
@@ -165,33 +168,45 @@
 			display: flex;
 			justify-content: center;
 			flex-direction: column;
-			padding: 10px;
+			padding: 20px; /* Increase padding for better spacing */
 			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			border-radius: 5px;
-
+			border-radius: 10px; /* Increase border radius for rounded corners */
 		}
+		
 
 		.form_container {
 			margin-top: 20px;
 		}
 
-		#form-title{
+		#form-title {
+			text-align: center; /* Center align the text */
+			font-size: 100px; /* Increase font size */
 			color: #fff;
 		}
+		.login_container {
+			display: flex;
+			justify-content: center; /* Center align horizontally */
+			padding: 0 2rem;
+		}
+		
 		.login_btn {
-			width: 100%;
+			width: 200px; /* Increase width */
+			height: 100px; /* Increase height */
 			background: #33ccff !important;
 			color: white !important;
+			font-size: 50px; /* Increase font size */
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
 		}
+		
 		.login_btn:focus {
 			box-shadow: none !important;
 			outline: 0px !important;
 		}
-		.login_container {
-			padding: 0 2rem;
-		}
+		
+			
+	
 		.input-group-text {
 			background: #f7ba5b !important;
 			color: white !important;
@@ -203,63 +218,113 @@
 			box-shadow: none !important;
 			outline: 0px !important;
 		}
-		/* Reset default browser styles */
 
-
-		/* Reset default browser styles */
-body, html {
-  margin: 0;
-  padding: 0;
-}
-
-.buttons-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 20vh;
-}
-
-.google-button, .github-button {
-  display: inline-block;
-  background-color: #FFFFFF; /* Button background color */
-  color: #000000; /* Button text color */
-  text-decoration: none;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  transition: background-color 0.3s ease;
-  background-repeat: no-repeat;
-  background-position: 10px 50%;
-  background-size: 24px 24px;
-  padding-left: 44px; /* Adjust based on icon size */
-}
-
+		#messages{
+			background-color: grey;
+			color: #fff;
+			padding: 10px;
+			margin-top: 10px;
+		}
+		.buttons-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 20vh;
+		  }
+		  .github-button,
 .google-button {
-  background-color: #ffffff; /* Google Button background color */
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png');
+    display: inline-block;
+    background-color: #FFFFFF; /* Button background color */
+    color: #000000; /* Button text color */
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 30px; /* Increase font size */
+    padding: 25px 35px; /* Increase padding */
+    border-radius: 6px;
+    margin-bottom: 12px;
+    transition: background-color 0.3s ease;
+    background-repeat: no-repeat;
+    background-position: 10px 50%;
+    background-size: 24px 24px;
+    padding-left: 44px; /* Adjust based on icon size */
 }
 
-.github-button {
-  background-color: #FFFFFF; /* GitHub Button background color */
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg');
-}
+		  
+		  .google-button {
+			background-color: #ffffff; /* Google Button background color */
+			background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png');
+		  }
+		  
+		  .github-button {
+			background-color: #FFFFFF; /* GitHub Button background color */
+			background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg');
+		  }
+		  
+		  .google-button:hover {
+			background-color: #2535e7e0; /* Button hover background color */
+		  }
+		  .github-button:hover {
+			background-color: #3b3a3a; /* Button hover background color */
+		  }
 
-.google-button:hover {
-  background-color: #2535e7e0; /* Button hover background color */
-}
-.github-button:hover {
-  background-color: #3b3a3a; /* Button hover background color */
-}
-
-
-
+		  .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%;
+            height: 10%;
+            padding-top: 0;
+			align-items: center;
+        }
+		h2 {
+			text-align: center;
+			color: #0a5e41;
+			height: 100px; /* Adjust the height as needed */
+			line-height: 100px; /* Set line-height to match the height */
+			display: block;
+			font-size: 1.5em;
+			margin-block-end: 0.83em;
+			margin-inline-start: 0px;
+			margin-inline-end: 0px;
+			font-weight: bold;
+			font-size:70px;
+		}
+		.d-flex.justify-content-center.h-100 {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+		}
+		.input-group {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		.input-group .form-control {
+			width: 80%; /* Set width to 80% */
+			height: 100px; /* Increase height */
+			font-size: 50px; /* Increase font size */
+		}
+		.d-flex.justify-content-center.links {
+			text-align: center; 
+			font-size: 50px; 
+		}
+		
+		
+		
+		
+		
+		  
+		  
 	</style>
 
 </head>
 <body>
+	<div class="welcome" >
+		<img class="logo" src="{% static 'assets/logo.png' %}">
+        <h2>Welcome to Money Minder! </h2>
+	</div>
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 			<div class="user_card">
