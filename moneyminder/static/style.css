@@ -149,7 +149,10 @@ input[type="number"] {
 .delete-btn:focus {
   outline: 0;
 }
-
+/* hover */
+.btn-add:hover {
+  transform: scale(1.1); /* Scale the button to 110% of its original size */
+}
 .list {
   list-style-type: none;
   padding: 0;
@@ -217,6 +220,7 @@ header .actions {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   z-index: 40;
+  margin-bottom: 20px; 
 }
 
 h2,
@@ -225,8 +229,8 @@ h4 {
   text-align: center;
 }
 
-form {
-  width: 100%;
+#form {
+  width: 80%;
 }
 
 .form-control {

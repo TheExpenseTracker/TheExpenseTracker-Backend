@@ -1,7 +1,8 @@
 from django.shortcuts import render , redirect
+
 from django.http import HttpResponseRedirect , JsonResponse
 from django.views import View
-from .forms import CreateUserForm, LoginForm
+from .forms import CreateUserForm, LoginForm , CustomerForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User , auth
 from django.contrib.auth import authenticate
@@ -20,39 +21,50 @@ import json
 def index(request):
     template = 'index.html'
     income_sources = Income_sources.objects.filter(user=request.user)
-    selected_income_source = None
-    income_amount = None
+    
     user = request.user
     now = timezone.now()
-    last_login = user.last_login
+    last_login = user.date_joined
 
     is_first_login = False
-    if now - last_login < timedelta(minutes=1):
+    if now - last_login < timedelta(minutes=2):
         is_first_login = True
-    if 'income_source_id' in request.GET:
-        income_source_id = request.GET['income_source_id']
-        selected_income_source = Income_sources.objects.filter(id=income_source_id, user=request.user).first()
-        if selected_income_source:
-            income_amount = selected_income_source.amount
     
     
-    monthly_expense = Monthly_Expense.objects.filter(user=request.user).first()
+    
+    monthly_expense_queryset = Monthly_Expense.objects.filter(user=request.user)
+    monthly_expense = monthly_expense_queryset.first()
     income__amount = Income_sources.objects.filter(user=request.user)
+    exp_amount = monthly_expense.exp_amt if monthly_expense else 0
     total = sum(p.amount for p in income__amount)
-    # updated_balance = float(total) - float(monthly_expense.exp_amt)
-    # print(updated_balance)
-    selected_income = request.session.get('selected_income')
-    total_income = request.session.get('total_income')
-    total_expense = request.session.get('total_expense')
+    
+    updated_balance = float(total) - exp_amount
+    
+    # selected_income = request.session.get('selected_income')
+    # total_income = request.session.get('total_income')
+    # total_expense = request.session.get('total_expense')
+    saving_query = saving_goal.objects.filter(user = request.user)
+    saving = saving_query.first()
+    s= saving.goal if saving else None
+    if s:
+        saving_amount = (s/100)*float(total)
+    else :
+        saving_amount=0
+
+    transactions = Transaction.objects.filter(user = user).order_by('created_at')
+
     context = {
-        'expense_amount': monthly_expense.exp_amt if monthly_expense else None,
+        
         'income_sources': income_sources,
-        'selected_income_source': selected_income_source,
-        'income_amount': income_amount,
+        'total':total,
+        'updated_balance':updated_balance,
+        'exp_amount':exp_amount,
         'is_first_login': is_first_login,
-        'selected_income': selected_income,
-        'total_income': total_income,
-        'total_expense': total_expense,
+        # 'selected_income': selected_income,
+        # 'total_income': total_income,
+        # 'total_expense': total_expense,
+        'saving_amount':saving_amount,
+        'transactions':transactions
         # 'updated_balance' :updated_balance,
         
     }
@@ -94,9 +106,22 @@ def my_login(request):
             password = request.POST.get('password')
 
             user = authenticate(request, username=username, password=password)
-
+            Customer.objects.create(user = user , username = username , email=user.email , phone = None, profileimg=None , )
 
             if user is not None:
+                # # custom alert section
+                # custom_alert_query = custom_alert.objects.filter(user = request.user)
+                # custom = custom_alert_query.all()
+                # if custom:
+                #     for customs in custom:
+                #         customs_alert = customs.custom_text
+                #         customs_date = customs.date
+                #         email = user.email
+                #         # date_obj = datetime.strptime(customs_date, "%Y-%m-%d")
+                #         allert_contd(email , customs_date , customs_alert)
+
+
+                
 
                 auth.login(request,user)
 
@@ -106,29 +131,40 @@ def my_login(request):
 
 
     return render(request, 'signin.html', context=context)
-@login_required(login_url='my_login')
-# def info (request):
-#     user = request.user
-#     category = Category.objects.earliest('created_at')
-#     if request.method == 'POST':
-#         income = request.POST['income']
-#         expense = request.POST['expense']
-#         saving_goal = request.POST['saving_goal']
-#         inc = Income.objects.create(user = user , income = income , saving_goal = saving_goal)
-#         inc.save()
-#         exp = Expense.objects.create(user = user , ex_amount = expense , category = category , remark = 'First' , bill_image = None , payment_method = 0)
-#         exp.save()
-#         return redirect('home')
-#     return render(request , 'info.html')
 
+@login_required(login_url = 'my_signin')
+def logout(request):
+    auth.logout(request)
+    return redirect('my_login')
 
+def account(request):
+    user= request.user
+    customer = Customer.objects.filter(user=user).first()
+    print(customer)
 
+    if request.method == "POST":
+
+        form = CustomerForm(request.POST)   
+
+        if form.is_valid():
+            
+            form.save()
+
+            return redirect("home")
         
+    else:
+        form = CustomerForm()
+
+    context = {'Form':form , 'customer':customer}
+
+    return render(request, 'account.html', context=context)
+            
 def custom(request):
     user = request.user
+    
     if request.method =='POST':
-        custom_text = request.POST['custom_text']
-        date = request.POST['custom_date']
+        custom_text = request.POST['alertMessage']
+        date = request.POST['alertDate']
         cus = custom_alert.objects.create(user=user , custom_text = custom_text , date = date)
         cus.save()
         date_obj = datetime.strptime(date, "%Y-%m-%d")
@@ -147,14 +183,27 @@ def allert(user_email , alert , custom_text):
      if current>= alert_date.date():
             print(timezone.now().date())
         # Send the email
+            subject = "Reminder!!!!: Your  due date is approaching"
+            message = f"Your event of { custom_text } is approaching in 5 days. Start Preparing!!!"
+            from_email = "money.minder077@gmail.com"  # Replace with your email
+            recipient_list = [user_email]  # Replace with the recipient's email
+            send_mail(subject, message, from_email, recipient_list)
+
+
+def allert_contd(user_email , alert , custom_text):
+    
+     alert_date = alert - timedelta(days=5)
+    
+     current = timezone.now().date()
+     
+     if current>= alert_date:
+            print(timezone.now().date())
+        # Send the email
             subject = "Reminder: Your  due date is approaching"
             message = f"Your event of { custom_text } is coming Don't forget to prepare!"
             from_email = "sakarbhandari100000@gmail.com"  # Replace with your email
             recipient_list = [user_email]  # Replace with the recipient's email
             send_mail(subject, message, from_email, recipient_list)
-
-
-
 
 
 # def saving_alert(user_email , saving_goal):
@@ -229,15 +278,15 @@ def count_sources_for_user(user):
     
     sources_count = Income_sources.objects.filter(user=user).count()
     return sources_count
-def update_income_amount_view(request):
-    user = request.user
-    income_source_id = request.GET.get('income_source_id')
-    income_source = Income_sources.objects.filter(id=income_source_id, user=request.user).first()
-    income_amount = income_source.amount if income_source else None
+# def update_income_amount_view(request):
+#     user = request.user
+#     income_source_id = request.GET.get('income_source_id')
+#     income_source = Income_sources.objects.filter(id=income_source_id, user=request.user).first()
+#     income_amount = income_source.amount if income_source else None
     
-    expense_source = Monthly_Expense.objects.get(user=user)
-    expense_amount = expense_source.exp_amt
-    return JsonResponse({'income_amount': income_amount , 'expense_amount':expense_amount})
+#     expense_source = Monthly_Expense.objects.get(user=user)
+#     expense_amount = expense_source.exp_amt
+#     return JsonResponse({'income_amount': income_amount , 'expense_amount':expense_amount})
 
 
 
@@ -248,15 +297,32 @@ def add_transaction_view(request):
         # Extract the transaction data
         text = data.get('text')
         amount = float(data.get('amount'))
-        income_source = int(data.get('income_source_id'))
-        income_source = Income_sources.objects.get(id=income_source)
-        transaction = Transaction.objects.create(user=request.user,income_source = income_source, text=text, amount=amount)
+        
+        transaction = Transaction.objects.create(user=request.user, text=text, amount=amount)
 
 #         # Update balance, income, and expense
-        transactions = Transaction.objects.filter(user=request.user , income_source = income_source)
-        total = sum(transaction.amount for transaction in transactions)
-        income = sum(transaction.amount for transaction in transactions if transaction.amount > 0)
-        expense = sum(transaction.amount for transaction in transactions if transaction.amount < 0)
+        transactions = Transaction.objects.filter(user=request.user).order_by('-created_at').first()
+       
+        mexp = Monthly_Expense.objects.filter(user = request.user)
+        mexpp = mexp.first()
+        if mexpp is None:
+    # Create a new MonthlyExpense object if it doesn't exist for the user
+            mexpp = Monthly_Expense(user=request.user)
+            mexpp.save()
+        mexpp.exp_amt += float(abs(transactions.amount)) if transactions.amount < 0 else 0 
+        mexpp.save()
+        iexp = Income_sources.objects.filter(user=request.user).first()
+        
+
+        iexp.amount+= transactions.amount if transactions.amount > 0 else 0 
+        iexp.save()
+        balance = float(iexp.amount )- mexpp.exp_amt
+        # saving = saving_goal.objects.filter(user=request.user).first()
+        # savi = (saving.goal/100)* float(iexp.amount)
+        # saving.goal = (savi/float(iexp.amount))
+        # saving.save()
+        
+
 
         return JsonResponse({
             'transaction': {
@@ -264,9 +330,10 @@ def add_transaction_view(request):
                 'text': transaction.text,
                 'amount': transaction.amount
             },
-            'balance': total,
-            'income': income,
-            'expense': expense
+            'balance': balance,
+            'income': iexp.amount,
+            'expense': mexpp.exp_amt,
+            # 'saving':saving.goal
         })
 
     return JsonResponse({'error': 'Invalid request method'})
@@ -300,3 +367,51 @@ def updated_values(request):
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
+    
+
+def calculator(request):
+    return render(request , 'try.html')
+
+def chupdate_values(request):
+    e=[]
+    i=[]
+    c=[]
+    te=[]
+
+    user = request.user
+    
+    transaction = Transaction.objects.filter(user=user).order_by('created_at')
+    if not transaction.exists():
+        e = [0]
+        i = [0]
+        c = []
+        te = []
+    else:
+        for t in transaction:
+            es = t.amount if t.amount< 0 else 0
+            e.append(es)
+            
+            
+            ic = float(t.amount if t.amount> 0 else 0)
+            i.append(ic)
+
+            cr = t.created_at
+            
+            
+            c.append(cr)
+
+            tex = t.text
+            te.append(tex)
+
+            
+            
+
+    context = {
+        'e':e,
+        'i':i,
+        'c':c,
+        'te':te,
+    }
+    return JsonResponse(context)
+        
+    

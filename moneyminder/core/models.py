@@ -57,7 +57,7 @@ class custom_alert(TimeStampModel):
 
 
 
-class Income_sources(models.Model):
+class Income_sources(TimeStampModel):
     user = models.ForeignKey(User, on_delete= models.CASCADE)
     source = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -65,16 +65,16 @@ class Income_sources(models.Model):
         return self.source
 
 
-class Monthly_Expense(models.Model):
+class Monthly_Expense(TimeStampModel):
     user = models.ForeignKey(User, on_delete= models.CASCADE)
     exp_amt = models.FloatField()
 
 
-class Transaction(models.Model):
+class Transaction(TimeStampModel):
     user = models.ForeignKey(User , on_delete = models.CASCADE)
-    income_source = models.ForeignKey(Income_sources , on_delete = models.CASCADE)
     text = models.CharField(max_length = 255)
-    amount = models.DecimalField(max_digits = 10 , decimal_places = 2) 
+    amount = models.DecimalField(max_digits = 10 , decimal_places = 2)
+    # created_at = models.DateTimeField(auto_now_add=True , default = None)
 
     def __str__(self):
         return self.text
@@ -82,3 +82,27 @@ class Transaction(models.Model):
 class saving_goal(models.Model):
     user = models.ForeignKey(User , on_delete = models.CASCADE)
     goal = models.FloatField()
+
+
+class Customer(models.Model):
+    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    phone = models.IntegerField(null =True)
+    username = models.CharField(max_length = 100 , default = None)
+    email = models.EmailField(default = None)
+    profileimg = models.ImageField(null=True, blank=True, default='logo.png')
+    date_created = models.DateTimeField(auto_now_add = True , null=True)
+
+    def __str__self(self):
+        return self.user.username
+    
+class UserExpenseRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    total_expense_on_date = models.FloatField()
+    actual_vs_pre = models.FloatField()
+
+    def __str__(self) -> str:
+        return f'{self.user.username} - {self.date}'
+
+    class Meta:
+        unique_together = ['user', 'date']

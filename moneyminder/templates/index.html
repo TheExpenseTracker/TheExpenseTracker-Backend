@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="stylesheet" href="{% static 'nav.css' %}">
     <link rel="stylesheet" href="{% static 'popup.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+    {% comment %} <link src="{% static 'vendor/chart.js/chart.umd.js' %}" rel="stylesheet"> {% endcomment %}
     <style>
         body {
             margin: 0;
@@ -56,6 +58,11 @@
         .main-content {
             display: none;
         }
+        #form {
+            width: 30%;
+            margin: 0 auto; 
+        }
+        
     </style>
 </head>
 
@@ -81,17 +88,17 @@
                             <ion-icon name="person-outline" class="person-outlines"></ion-icon>
                         </button>
                         <button>
-                            <a class="home" href="index.html">Home</a>
+                            <a class="home" href="/">Home</a>
                         </button>
                         
                           <a class="divider">|</a>
                         <button>
-                          <a class="emi-text" href="try.html">Calculator</a>
+                          <a class="emi-text" href="calculator">Calculator</a>
                       </button>
                       
                         <a class="divider">|</a>
                         <button>
-                            <a class="alert" href="custom.html">Custom Alert</a>
+                            <a class="alert" href="{% url 'custom' %}">Custom Alert</a>
                         </button>
                         
                           <a class="divider">|</a>
@@ -100,11 +107,11 @@
                         </button>
                         <a class="divider">|</a>
                         <button>
-                            <a class="login-text">Login</a>
+                            <a class="login-text" href="{% url 'my_login' %}">Logout</a>
                         </button>
                         <a class="divider">|</a>
                         <button>
-                            <a class="signup-text">SignUp</a>
+                            <a class="hello-msg" href='account'>Hello, {{request.user}}</a>
                         </button>
                         <button class="lang-button">
                             <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
@@ -151,45 +158,46 @@
       </div> {% endcomment %}
   </div>
 
-    
-    
+  <div class="row">
+    <div class="col-md-6" style="width: 40%;">
+        <h4>Expense and Income</h4>
+        <hr>
+        <canvas id="expenseAndIncomeChart" width="400" height="250"></canvas>
+    </div>
+    <div class="col-md-6 "style="width: 40%;">
+        <h4>Expense by Category</h4>
+        <hr>
+        <canvas id="expensebycategory" width="400" height="250"></canvas>
+    </div>
+  
     <div class="main-content">
       <div class="container">
-        <form method="GET">
-            <label for="income_source">Select Income Source:</label>
-            <select name="income_source_id" id="income_source">
-                <option value="">Select an Income Source</option>
-                {% for income_source in income_sources %}
-                    <option value="{{ income_source.id }}" {% if income_source.id == selected_income_source.id %}selected{% endif %}>{{ income_source.source }}</option>
-                {% endfor %}
-            </select>
-           
-        </form>
+        
         
         <h4>Your Balance</h4>
-        <h1 <span id="balance"></span></h1>
+        <h1> <span id="balance"></span></h1>
         
         <div class="inc-exp-container">
             <div>
                 <h4>Income</h4>
-                <p id="money-plus" class="money-plus">
-                    {{ selected_income }}
+                <p><span id="money-plus" class="money-plus"></span>
+                    
                 </p>
             </div>
             <div>
                 <h4>Expense</h4>
-                <p id="money-minus" class="money-minus">
-                    -{{total_expense}}
+                <p><span id="money-minus" class="money-minus"> </span>
+                    
                 </p>
             </div>
             <div>
                 <h4>Saving Goal</h4>
-                <p id="saving-goal" class="saving-goal">
-                    $0.00
+                <p><span id="saving_goal" class="saving_goal"> </span>
+                    
                 </p>
             </div>
         </div>
-    
+        
         <h3>History</h3>
         <ul id="list" class="list">
             <!-- <li class="minus">
@@ -197,8 +205,14 @@
               ><button class="delete-btn">x</button>
             </li> -->
         </ul>
-        <h3>Add New Transaction</h3>
+    </div>
+        
+   
+        
+    
         {% comment %} <form id="form"> {% endcomment %}
+            <div id="form">
+                <h3>Add New Transaction</h3>
             <div class="form-control">
                 <label for="text">Text</label>
                 <input type="text" name = "text1" id="text" placeholder="Enter Text...."/>
@@ -208,12 +222,19 @@
                 <input type="number" name = "amount1" id="amount" placeholder="Enter amount..."> 
             </div>
             <button type="button" class="btn-add" onclick='addTransaction()'>Add transaction</button>
-
+        </div>
         {% comment %} </form> {% endcomment %}
     </div>
     </div>
+    
+</div>
+    
     {% if is_first_login %}
     <div class="initial-form-container">
+        <script>
+        document.querySelector(".main-content").style.display = "none";
+
+        </script>
         <img class="logo" src="{% static 'assets/logo.png' %}">
         <h2>Welcome to Money Minder! Let's set up your initial details.</h2>
         <form id="initial-form" method = 'POST' action='{% url "save_income" %}'>
@@ -237,6 +258,8 @@
     {% else %}
     <script>
         document.querySelector(".main-content").style.display = "block";
+        document.querySelector(".header-main").style.display = "block";
+
     </script>
     {% endif %}
 
@@ -250,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
       document.querySelector(".initial-form-container").style.display = "none";
     }
   }); 
-  document.getElementById('income_source').addEventListener('change', function() {
+  {% comment %} document.getElementById('income_source').addEventListener('change', function() {
     var incomeSourceId = this.value;
     fetch('/update_income_amount/?income_source_id=' + incomeSourceId)
         .then(response => response.json())
@@ -260,18 +283,138 @@ document.addEventListener("DOMContentLoaded", function() {
             updateBalance();
         }); 
 
-});
-function updateBalance() {
+}); {% endcomment %}
+{% comment %} function updateBalance() {
     var incomeAmount = parseFloat(document.getElementById('money-plus').innerText);
     var expenseAmount = parseFloat(document.getElementById('money-minus').innerText); // Fixed expense amount
     var balance = incomeAmount - expenseAmount;
     document.getElementById('balance').innerText = + balance.toFixed(2);
 }
-updateBalance();
+updateBalance(); {% endcomment %}
 </script>
 <script src="{% static 'js/script.js' %}"></script>
 
 
+    <script>
+       
+        
+        var ctx = document.getElementById('expenseAndIncomeChart').getContext('2d');
+        var expenseAndIncomeChart = new Chart(ctx, {
+        type: 'line',
+        data: { 
+            labels: ['Placeholder1', 'Placeholder2', 'Placeholder3'],
+            datasets: [{
+                label: 'Expense',
+                data: [0, 0, 0],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                fill: false
+            }, {
+                label: 'Income',
+                data: [0, 0, 0],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+        var ctx2 = document.getElementById('expensebycategory').getContext('2d');
+        var expensebycategory  = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Placeholder1', 'Placeholder2', 'Placeholder3'],
+                datasets: [{
+                    label: '# of Products',
+                    data: [0, 0, 0],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(255, 159, 64, 0.8)',
+                        'rgba(240, 120, 50, 0.8)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(240, 120, 50, 1)',
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });    
+    
+        var dates = [
+            
+        ];
+    
+        var expenses = [
+            
+        ];
+    
+        // Combine dates and expenses into datasets
+        var data = [];
+        for (var i = 0; i < dates.length; i++) {
+            data.push({x: dates[i], y: expenses[i]});
+        }
+    
+        // Sort data by date
+        data.sort(function(a, b) {
+            return new Date(a.x) - new Date(b.x);
+        });
+    
+        // Split sorted data back into dates and expenses
+        var sortedDates = [];
+        var sortedExpenses = [];
+        for (var i = 0; i < data.length; i++) {
+            sortedDates.push(data[i].x);
+            sortedExpenses.push(data[i].y);
+        }
+    
+        
+        {% comment %} var ctx = document.getElementById('expenseAndIncomeChart').getContext('2d');
+        var expenseAndIncomeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates,
+                datasets: [{
+                    label: 'Expense',
+                    data: sortedExpenses,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            } {% endcomment %}
+        {% comment %} }); {% endcomment %}
+    
+</script>
 </body>
 
 </html>

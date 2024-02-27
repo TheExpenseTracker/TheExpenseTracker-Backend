@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <title>Switch button</title>
+    
+    <style>
+        #btn {
+            left: 0;
+            top: 0;
+            position: absolute;
+            width: 110px;
+            height: 100%;
+            background: #a7e081;
+            border-radius: 30px;
+            transition: .5s;
+            color: transparent;
+        }
+
+        .button-box {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            width: 48%;
+        }
+
+        .content {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.5s, opacity 0.5s;
+    }
+
+    #interest,
+    #emi {
+        max-height: 1000px;
+        opacity: 1;
+        overflow: auto; /* Added to enable scrolling if content exceeds the height */
+        transition: max-height 0.5s, opacity 0.5s;}
+
+        
+    </style>
+</head>
+<header>
+  <div class="header-main">
+      <div class="container">
+          <a href="#" class="header-logo">
+            <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+          </a>
+
+          <!-- <div class="header-search-container">
+              <input type="search" name="search" class="search-field" placeholder="Search" />
+
+              <button class="search-btn">
+                  <ion-icon name="search-outline"></ion-icon>
+              </button>
+          </div> -->
+          <div class="actions">
+              <div class="header-user-actions">
+                  <button class="action-btn">
+                      <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                  </button>
+                  <button>
+                    <a class="home" href="/">Home</a>
+                </button>
+                
+                  <a class="divider">|</a>
+                  <button>
+                      <a class="emi-text"href="{% url 'calculator'%}">Calculator</a>
+                  </button>
+                  <a class="divider">|</a>
+                  <button>
+                    <a class="alert" href="custom.html">Custom Alert</a>
+                </button>
+                
+                  <a class="divider">|</a>
+                  <button>
+                      <a class="faq-text">FAQ</a>
+                  </button>
+                  <a class="divider">|</a>
+                        <button>
+                            <a class="login-text">Logout</a>
+                        </button>
+                        <a class="divider">|</a>
+                  <div class="language-container">
+                      <a class="EN">Settings</a>
+                      <a class="down-arrow">⌄</a>
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+  </header>
+
+<body>
+    <div class="form-box">
+        <div class="button-box">
+            <div id="btn"></div>
+            <button type="button" class="toggle-btn" onclick="toggleContent('interest')">Interest</button>
+            <button type="button" class="toggle-btn" onclick="toggleContent('emi')">EMI</button>
+        </div>
+        <div id="interest" class="content">
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Compound Interest Calculator</title>
+                <link rel="stylesheet" href="{% static 'interest.css' %}">
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+            </head>
+            <body>
+                <section class="container">
+                    <div class="calculator">
+                        <div class="heading">
+                            <h3>Compound Interest Calculator</h3>
+                            <small>Your money growth over time using compound interest...</small>
+                        </div>
+                        <form class="compound-form">
+                            <div class="input-group">
+                                <label for="initialamount">Initial Amount</label>
+                                <input type="number" id="initialamount" />
+                            </div>
+                            <div class="input-group">
+                                <label for="years">Investment Years</label>
+                                <input type="number" id="years" />
+                            </div>
+                            <div class="input-group">
+                                <label for="rates">Estimated Rates(%)</label>
+                                <input type="number" id="rates" />
+                            </div>
+                            <div class="input-group">
+                                <label for="rates">Compound Interval</label>
+                                <select id="compound">
+                                    <option value="1">Annualy</option>
+                                    <option value="4">Quartely</option>
+                                    <option value="2">Semiannualy</option>
+                                    <option value="12">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <button>Calculate</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="results">
+                        <h3 id="message"></h3>
+                        <canvas id="data-set"></canvas>
+                    </div>
+                </section>
+                <script src="{% static 'js/interest.js' %}"></script>
+            </body>
+            </html>
+            
+        </div>
+        <div id="emi" class="content" style="display: none;">
+            <!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="{% static 'style.css' %}">
+            </head>
+              <body>
+                <div class="loan-calculator">
+                  <div class="top">
+                    <h2>EMI Calculator</h2>
+            
+                    <form action="#">
+                      <div class="group">
+                        <div class="title">Amount</div>
+                        <input type="text" value="30000" class="loan-amount" />
+                      </div>
+            
+                      <div class="group">
+                        <div class="title">Interest Rate</div>
+                        <input type="text" value="8.5" class="interest-rate" />
+                      </div>
+            
+                      <div class="group">
+                        <div class="title">Tenure (in months)</div>
+                        <input type="text" value="240" class="loan-tenure" />
+                      </div>
+                    </form>
+                  </div>
+            
+                  <div class="result">
+                    <div class="left">
+                      <div class="loan-emi">
+                        <h3>Loan EMI</h3>
+                        <div class="value">123</div>
+                      </div>
+            
+                      <div class="total-interest">
+                        <h3>Total Interest Payable</h3>
+                        <div class="value">1234</div>
+                      </div>
+            
+                      <div class="total-amount">
+                        <h3>Total Amount</h3>
+                        <div class="value">12345</div>
+                      </div>
+            
+                      <button class="calculate-btn">Calculate</button>
+                    </div>
+            
+                    <div class="right">
+                      <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                  </div>
+                </div>
+            
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+            
+                <script src="{% static 'js/emi.js' %}"></script>
+
+              </body>
+            </html>
+           
+        </div>
+    </div>
+    <script>
+        var btn = document.getElementById('btn');
+        var interestContent = document.getElementById('interest');
+        var emiContent = document.getElementById('emi');
+
+        function toggleContent(selected) {
+            if (selected === 'interest') {
+                btn.style.left = '0';
+                interestContent.style.display = 'block';
+                emiContent.style.display = 'none';
+            } else {
+                btn.style.left = '110px';
+                interestContent.style.display = 'none';
+                emiContent.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

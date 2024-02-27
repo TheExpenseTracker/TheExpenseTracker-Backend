@@ -1,40 +1,204 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+   
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <style>
+        body {
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          background-color: #f2f2f2;
+          margin: 0;
+          padding: 0;
+        }
+         
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #107d71; /* Greenish color */
+        }
 
-    <title>Custom Template</title>
-  </head>
-  <body>
-    <form method='POST' action=''>
-      {% csrf_token %}
-        
-        <div class="form-group">
-          <label for="exampleInputPassword1">What do u want to set alert for???</label>
-          <input type="text" class="form-control" id="exampleInputPassword1" placeholder="eg. Money payment to Suman" name='custom_text'>
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #2ecc71;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #107d71; /* Dark green color */
+        }
+
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="date"]::placeholder,
+        textarea::placeholder {
+            color: #107d71; /* Dark green color */
+            opacity: 0.7;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+   
+</head>
+
+<body>
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-logo">
+                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+                </a>
+
+                <!--  <div class="header-search-container">
+                    <input type="search" name="search" class="search-field" placeholder="Search" />
+
+                    <button class="search-btn">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </button> 
+                </div> -->
+                <div class="actions">
+                    <div class="header-user-actions">
+                        <button class="action-btn">
+                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                        </button>
+                        <button>
+                            <a class="home" href="/">Home</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                          <a class="emi-text" href="/calculator">Calculator</a>
+                      </button>
+                      
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="alert" href="custom.html">Custom Alert</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                            <a class="faq-text">FAQ</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="login-text">Logout</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <div class="language-container">
+                            <a class="EN">Settings</a>
+                            <a class="down-arrow">⌄</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="mobile-bottom-navigation">
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="bag-handle-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="home-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="heart-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="grid-outline"></ion-icon>
+            </button>
+        </div>
+    </header>
+    
+    <h2>Set Custom Alert</h2>
+    <form id="alertForm" method='POST' action=''>
+        {% csrf_token %}
+        <label for="alertDate" style="color: #107d71;">Date:</label>
+        <input type="date" id="alertDate" name="alertDate" required placeholder="Select date"><br><br>
         
-        <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
-            <input placeholder="Select date" type="text" id="picker" class="form-control" name='custom_date'>
-            <label for="example">When is the deadline?</label>
-            <i class="fas fa-calendar input-prefix"></i>
-          </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-      <script type="text/javascript">
-        $(function () {
-            $('#picker').datepicker();
-        });
-     </script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+        <label for="alertMessage" style="color: #107d71;">Alert Message:</label><br>
+        <textarea id="alertMessage" name="alertMessage" rows="4" required placeholder="Enter your alert message here"></textarea><br><br>
+        
+        <button type="submit">Set Alert</button>
+    </form>
+
+    
+        <h2>Set EMI Details</h2>
+        <form id="emiForm">
+            <label for="emiDate" style="color: #107d71;">EMI Date:</label>
+            <input type="date" id="emiDate" name="emiDate" required placeholder="Select EMI date"><br><br>
+        
+            <label for="frequency" style="color: #107d71;">Frequency:</label>
+            <select id="frequency" name="frequency">
+                <option value="annual">Annual</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="semi-annual">Semi-Annual</option>
+            </select><br><br>
+            
+            <button type="button">Set EMI Alert</button>
+        </form>
+        <script>
+        {% comment %} document.getElementById("alertForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+            
+            // Get the values entered by the user
+            var alertDate = document.getElementById("alertDate").value;
+            var alertMessage = document.getElementById("alertMessage").value;
+    
+            // You can do further processing here, such as storing the values in a database or displaying them
+            // For now, let's just log them to the console
+            console.log("Date: " + alertDate);
+            console.log("Alert Message: " + alertMessage);
+    
+            // Optionally, you can clear the form after submission
+            document.getElementById("alertForm").reset();
+        }); {% endcomment %}
+    </script>
+
+</body>
+
 </html>

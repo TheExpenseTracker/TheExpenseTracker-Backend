@@ -29,7 +29,7 @@ function addTransaction() {
       // id:generateID(),
       text: text.value,
       amount: +amount.value,
-      income_source_id: document.getElementById("income_source").value,
+      
     };
     fetch("/transaction/", {
       method: "POST",
@@ -44,9 +44,10 @@ function addTransaction() {
       .then((data) => {
         // Update the balance based on the response
        
-        // balance.innerText = `$${data.balance}`;
-        // money_plus.innerText = `$${data.income}`;
-        // money_minus.innerText = `$${data.expense}`;
+        balance.innerText = `$${data.balance}`;
+        money_plus.innerText = `$${data.income}`;
+        money_minus.innerText = `$${data.expense}`;
+        // saving_goal.innerText = `$${data.saving}`;
         
 
         // Reset form values
@@ -55,7 +56,7 @@ function addTransaction() {
         transactions.push(data.transaction);
         
         addTransactionDOM(data.transaction);
-        Init();
+        // Init();
         updateLocalStorage();
         text.value = "";
         amount.value = "";
@@ -63,8 +64,54 @@ function addTransaction() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }
+  fetch("/prediction/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+      "X-SessionID": getCookie("sessionid"),
+    },
+    body: JSON.stringify(transaction),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.message) {
+        alert(data.message);
+      } else {
+        console.log("Message is null or undefined");
+      }
+
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  fetch('/update_chvalues/')
+    .then(response => response.json())
+    .then(data => {
+        
+        expenseAndIncomeChart.data.datasets[0].data = data.e;
+        expenseAndIncomeChart.data.datasets[1].data = data.i;
+        expenseAndIncomeChart.data.labels = data.c;
+        expenseAndIncomeChart.update();
+        // expensebycategory.data.labels = data.c;
+        console.log(data.c)
+        expensebycategory.data.datasets[0].data = data.e;
+        expensebycategory.data.labels = data.te;
+        
+        expensebycategory.update();
+        dates = data.c;
+        console.log(dates);
+        expenses = data.e;
+
+    })
+      
+    .catch(error => {
+        console.error('Error fetching data:', error);
+   });
+    
   return false;
+  }
 }
 
 //5.5
@@ -117,10 +164,7 @@ function handleIncomeSourceChange(event) {
   updateValues();
 }
 
-// Assuming you have a select element with id 'income_source_select' for selecting income sources
-document
-  .getElementById("income_source")
-  .addEventListener("change", handleIncomeSourceChange);
+
 
 function updateValues() {
   console.log("Verified")
@@ -221,7 +265,7 @@ function generateIncomeFields() {
 
 function submitForm(event) {
   event.preventDefault();
-
+  
   // Check if the URL contains the show_elements parameter
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has("show_elements")) {
@@ -229,7 +273,7 @@ function submitForm(event) {
     document.querySelector(".main-content").style.display = "block";
     document.querySelector(".initial-form-container").style.display = "none";
   }
-
+  
   setTimeout(() => {
     document.getElementById("initial-form").submit();
   }, 100);
