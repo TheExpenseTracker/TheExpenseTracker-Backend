@@ -86,11 +86,14 @@ class saving_goal(models.Model):
 
 class Customer(models.Model):
     user = models.ForeignKey(User , on_delete = models.CASCADE)
-    phone = models.IntegerField(null =True)
+    phone = models.IntegerField(null =True , blank = True)
     username = models.CharField(max_length = 100 , default = None)
     email = models.EmailField(default = None)
-    profileimg = models.ImageField(null=True, blank=True, default='logo.png')
+    profileimg = models.ImageField(null=True, blank=True, default='profile.jpg')
     date_created = models.DateTimeField(auto_now_add = True , null=True)
+    location = models.CharField(max_length = 100 , default = 'Ktm , Nepal')
+    age = models.IntegerField(default = 18)
+    info = models.TextField(default = 'This is my about section')
 
     def __str__self(self):
         return self.user.username
@@ -106,3 +109,9 @@ class UserExpenseRecord(models.Model):
 
     class Meta:
         unique_together = ['user', 'date']
+
+
+class Total(models.Model):
+    user = models.ForeignKey(User,  on_delete = models.CASCADE)
+    total_income = models.FloatField()
+    

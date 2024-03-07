@@ -1,0 +1,201 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+   
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <style>
+        body {
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          background-color: #f2f2f2;
+          margin: 0;
+          padding: 0;
+        }
+         
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #107d71; /* Greenish color */
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #2ecc71;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #107d71; /* Dark green color */
+        }
+
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="date"]::placeholder,
+        textarea::placeholder {
+            color: #107d71; /* Dark green color */
+            opacity: 0.7;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+   
+</head>
+
+<body>
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-logo">
+                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+
+                </a>
+
+                <!--  <div class="header-search-container">
+                    <input type="search" name="search" class="search-field" placeholder="Search" />
+
+                    <button class="search-btn">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </button> 
+                </div> -->
+                <div class="actions">
+                    <div class="header-user-actions">
+                        <button class="action-btn">
+                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                        </button>
+                        <button>
+                            <a class="home" href="index.html">Home</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                          <a class="emi-text" href="try.html">Calculator</a>
+                      </button>
+                      
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="alert" href="custom.html">Alert</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                            <a class="faq-text" href="FAQ.html">FAQ</a>
+                        </button>
+                        <a class="divider">|</a>
+                         <!-- logout added -->
+                        <button>
+                            <a class="login-text">Logout</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <!-- <button>
+                            <a class="signup-text">SignUp</a>
+                        </button>
+                        <button class="lang-button">
+                            <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
+                        </button> -->
+                        <div class="language-container">
+                            <a class="EN">Settings</a>
+                            <a class="down-arrow">⌄</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-bottom-navigation">
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="bag-handle-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="home-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="heart-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="grid-outline"></ion-icon>
+            </button>
+        </div>
+    </header>
+    
+    
+    
+    <h2>Set EMI Details</h2>
+    <form id="emiForm" method='POST' , action=''>
+        {% csrf_token %}
+        <label for="emiDate" style="color: #107d71;">EMI Date:</label>
+        <input type="date" id="emiDate" name="emiDate" required placeholder="Select EMI date"><br><br>
+    
+        {% comment %} <label for="frequency" style="color: #107d71;">Frequency:</label> {% endcomment %}
+        {% comment %} <select id="frequency" name="frequency">
+            <option value="annual">Annual</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="semi-annual">Semi-Annual</option>
+        </select><br><br> {% endcomment %}
+        
+        <button type="submit">Set EMI Alert</button>
+    </form>
+    
+
+    {% comment %} <script>
+    
+    
+        document.getElementById("emiForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var emiDate = document.getElementById("emiDate").value;
+            var frequency = document.getElementById("frequency").value;
+            console.log("EMI Date: " + emiDate);
+            console.log("Frequency: " + frequency);
+            document.getElementById("emiForm").reset();
+        });
+    </script> {% endcomment %}
+    
+
+</body>
+
+</html>

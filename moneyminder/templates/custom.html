@@ -1,25 +1,26 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-   
     <link rel="stylesheet" href="{% static 'nav.css' %}">
+
+    <title>Switch button</title>
+
     <style>
         body {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          background-color: #f2f2f2;
-          margin: 0;
-          padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
         }
-         
+
         h1 {
             text-align: center;
             margin-top: 20px;
-            color: #107d71; /* Greenish color */
+            color: #107d71;
+            /* Greenish color */
         }
 
         h2 {
@@ -41,7 +42,8 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: #107d71; /* Dark green color */
+            color: #107d71;
+            /* Dark green color */
         }
 
         input[type="date"],
@@ -56,7 +58,8 @@
 
         input[type="date"]::placeholder,
         textarea::placeholder {
-            color: #107d71; /* Dark green color */
+            color: #107d71;
+            /* Dark green color */
             opacity: 0.7;
         }
 
@@ -74,131 +77,140 @@
         button[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        /* Styles for the toggle button */
+        #btn {
+            left: 0;
+            top: 0;
+            position: absolute;
+            width: 110px;
+            /* Adjust as needed */
+            height: 100%;
+            background: #a7e081;
+            border-radius: 30px;
+            transition: .5s;
+            color: transparent;
+            display: inline-block;
+            /* Change from 'block' to 'inline-block' */
+        }
+
+        .button-box {
+            width: 220px;
+            display: flex;
+            margin: 35px auto;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-direction: row;
+            /* Ensure the buttons are displayed horizontally */
+            position: relative;
+            border-radius: 30px;
+            background: #fff;
+        }
+
+        .toggle-btn {
+            padding: 10px 40px;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            outline: none;
+            position: relative;
+            text-align: center;
+        }
+
+        .content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.5s, opacity 0.5s;
+        }
+
+        #customalert,
+        #emialert {
+            max-height: 1000px;
+            opacity: 1;
+            overflow: auto;
+            /* Added to enable scrolling if content exceeds the height */
+            transition: max-height 0.5s, opacity 0.5s;
+        }
     </style>
-   
 </head>
 
-<body>
-    <header>
-        <div class="header-main">
-            <div class="container">
-                <a href="#" class="header-logo">
-                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
-                </a>
+<header>
+    <div class="header-main">
+        <div class="container">
+            <a href="#" class="header-logo">
+                <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
 
-                <!--  <div class="header-search-container">
-                    <input type="search" name="search" class="search-field" placeholder="Search" />
 
-                    <button class="search-btn">
-                        <ion-icon name="search-outline"></ion-icon>
-                    </button> 
-                </div> -->
-                <div class="actions">
-                    <div class="header-user-actions">
-                        <button class="action-btn">
-                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
-                        </button>
-                        <button>
-                            <a class="home" href="/">Home</a>
-                        </button>
-                        
-                          <a class="divider">|</a>
-                        <button>
-                          <a class="emi-text" href="/calculator">Calculator</a>
-                      </button>
-                      
-                        <a class="divider">|</a>
-                        <button>
-                            <a class="alert" href="custom.html">Custom Alert</a>
-                        </button>
-                        
-                          <a class="divider">|</a>
-                        <button>
-                            <a class="faq-text">FAQ</a>
-                        </button>
-                        <a class="divider">|</a>
-                        <button>
-                            <a class="login-text">Logout</a>
-                        </button>
-                        <a class="divider">|</a>
-                        <div class="language-container">
-                            <a class="EN">Settings</a>
-                            <a class="down-arrow">⌄</a>
-                        </div>
+            </a>
 
+            <div class="actions">
+                <div class="header-user-actions">
+                    <button class="action-btn">
+                        <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                    </button>
+                    <button>
+                        <a class="home" href="index.html">Home</a>
+                    </button>
+
+                    <a class="divider">|</a>
+                    <button>
+                        <a class="emi-text" href="try.html">Calculator</a>
+                    </button>
+
+                    <a class="divider">|</a>
+                    <button>
+                        <a class="alert" href="custom.html">Alert</a>
+                    </button>
+
+                    <a class="divider">|</a>
+                    <button>
+                        <a class="faq-text" href="FAQ.html">FAQ</a>
+                    </button>
+                    <a class="divider">|</a>
+                    <button>
+                        <a class="login-text">Logout</a>
+                    </button>
+                    <a class="divider">|</a>
+                    <div class="language-container">
+                        <a class="EN">Settings</a>
+                        <a class="down-arrow">⌄</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="mobile-bottom-navigation">
-            <button class="action-btn" data-mobile-menu-open-btn>
-                <ion-icon name="menu-outline"></ion-icon>
-            </button>
+    <div class="mobile-bottom-navigation">
+        <button class="action-btn" data-mobile-menu-open-btn>
+            <ion-icon name="menu-outline"></ion-icon>
+        </button>
 
-            <button class="action-btn">
-                <ion-icon name="bag-handle-outline"></ion-icon>
-            </button>
+        <button class="action-btn">
+            <ion-icon name="bag-handle-outline"></ion-icon>
+        </button>
 
-            <button class="action-btn">
-                <ion-icon name="home-outline"></ion-icon>
-            </button>
+        <button class="action-btn">
+            <ion-icon name="home-outline"></ion-icon>
+        </button>
 
-            <button class="action-btn">
-                <ion-icon name="heart-outline"></ion-icon>
-            </button>
+        <button class="action-btn">
+            <ion-icon name="heart-outline"></ion-icon>
+        </button>
 
-            <button class="action-btn" data-mobile-menu-open-btn>
-                <ion-icon name="grid-outline"></ion-icon>
-            </button>
+        <button class="action-btn" data-mobile-menu-open-btn>
+            <ion-icon name="grid-outline"></ion-icon>
+        </button>
+    </div>
+</header>
+
+<body>
+    <div class="form-box">
+        <div class="button-box">
+            <div id="btn"></div>
+            <button type="button" class="toggle-btn" onclick="window.location.href='customalert'">Custom Alert</button>
+            <button type="button" class="toggle-btn" onclick="window.location.href='emialert'">EMI Alert</button>
         </div>
-    </header>
-    
-    <h2>Set Custom Alert</h2>
-    <form id="alertForm" method='POST' action=''>
-        {% csrf_token %}
-        <label for="alertDate" style="color: #107d71;">Date:</label>
-        <input type="date" id="alertDate" name="alertDate" required placeholder="Select date"><br><br>
-        
-        <label for="alertMessage" style="color: #107d71;">Alert Message:</label><br>
-        <textarea id="alertMessage" name="alertMessage" rows="4" required placeholder="Enter your alert message here"></textarea><br><br>
-        
-        <button type="submit">Set Alert</button>
-    </form>
-
-    
-        <h2>Set EMI Details</h2>
-        <form id="emiForm">
-            <label for="emiDate" style="color: #107d71;">EMI Date:</label>
-            <input type="date" id="emiDate" name="emiDate" required placeholder="Select EMI date"><br><br>
-        
-            <label for="frequency" style="color: #107d71;">Frequency:</label>
-            <select id="frequency" name="frequency">
-                <option value="annual">Annual</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="semi-annual">Semi-Annual</option>
-            </select><br><br>
-            
-            <button type="button">Set EMI Alert</button>
-        </form>
-        <script>
-        {% comment %} document.getElementById("alertForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the form from submitting
-            
-            // Get the values entered by the user
-            var alertDate = document.getElementById("alertDate").value;
-            var alertMessage = document.getElementById("alertMessage").value;
-    
-            // You can do further processing here, such as storing the values in a database or displaying them
-            // For now, let's just log them to the console
-            console.log("Date: " + alertDate);
-            console.log("Alert Message: " + alertMessage);
-    
-            // Optionally, you can clear the form after submission
-            document.getElementById("alertForm").reset();
-        }); {% endcomment %}
-    </script>
-
+    </div>
 </body>
 
 </html>

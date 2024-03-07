@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+</head>
+<body>
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-logo">
+                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+                </a>
+            </div>
+            </div>
+        </header>
+        <div class="initial-form-container">
+            <script>
+            document.querySelector(".main-content").style.display = "none";
+     
+            </script>
+            <img class="logo" src="{% static 'assets/logo.png' %}">
+            <h2>Welcome to Money Minder! Let's edit your initial details.</h2>
+            <form id="initial-form" method = 'POST' action='{% url "save_income" %}'>
+                {% csrf_token %}    
+                <label for="numIncomes">Number of Income Sources:</label>
+                <input type="number" name = "numIncomes"id="numIncomes" min="1" max="100" value="{{ count }}"  required>
+                <div id="incomeFields">
+                    <div id="incomeContainer"></div>
+                </div>
+     
+                <label for="monthlyExpenses">Monthly Expense:</label>
+                <input type="number" name="exp_amt" id="monthlyExpenses" min="0"  value="{{ c }}"required />
+                <!-- End of added portion -->
+                <label for="saving">Saving Goal (Percentage):</label>
+                <input type="number" name="saving_goal" id="saving" min="1" max="100" placeholder="Enter Saving Goal in %" value = "{{ d.goal }}" required />
+                <button type="button" id="nextButton" onclick="generateIncomeFields()">Next</button>
+                {% comment %} <button type="submit" id="submitButton" style="display: none;" onclick="submitForm()">Submit</button> {% endcomment %}
+                <button type="submit" id="submitButton" style="display: none;" >Submit</button>
+            </form>
+        </div>
+</body>
+<script src="{% static 'js/script.js' %}"></script>
+<script >
+    document.getElementById('edit-btn').addEventListener('click', function() {
+        document.getElementById('edit-form').style.display = 'block';
+        // You can hide the displayed data here
+    });
+    document.getElementById('save-btn').addEventListener('click', function() {
+        var numIncomes = document.getElementById('numIncomes').value;
+        var exp_amt = document.getElementById('exp_amt').value;
+        var saving_goal = document.getElementById('saving_goal').value;
+        var formData = new FormData();
+        formData.append('numIncomes', numIncomes);
+        formData.append('exp_amt', exp_amt);
+        formData.append('saving_goal', saving_goal);
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+              const cookies = document.cookie.split(";");
+              for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+          }
+          
+        
+        fetch('/update_user_data/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful update
+            } else {
+                // Handle update failure
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+</html>

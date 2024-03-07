@@ -88,7 +88,7 @@ input {
 }
 
 .home{
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;
@@ -97,7 +97,7 @@ input {
 
 }
 .emi-text {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;
@@ -105,7 +105,7 @@ input {
   color: white;
 }
 .alert{
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;
@@ -113,7 +113,7 @@ input {
   color: white;
 }
 .faq-text {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;
@@ -121,7 +121,7 @@ input {
   color: white;
 }
 .login-text {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;
@@ -130,7 +130,7 @@ input {
 }
 
 .signup-text {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
   position: relative;
   bottom: 1px;

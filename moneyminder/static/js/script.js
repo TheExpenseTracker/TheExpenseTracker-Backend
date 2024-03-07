@@ -64,6 +64,29 @@ function addTransaction() {
       .catch((error) => {
         console.error("Error:", error);
       });
+      fetch('/update_chvalues/')
+      .then(response => response.json())
+      .then(data => {
+          
+          expenseAndIncomeChart.data.datasets[0].data = data.e;
+          expenseAndIncomeChart.data.datasets[1].data = data.i;
+          expenseAndIncomeChart.data.labels = data.c;
+          expenseAndIncomeChart.update();
+          // expensebycategory.data.labels = data.c;
+          
+          expensebycategory.data.datasets[0].data = data.e;
+          expensebycategory.data.labels = data.te;
+          expensebycategory.update();
+          
+          dates = data.c;
+          expenses = data.e;
+          
+      })
+        
+      .catch(error => {
+          console.error('Error fetching data:', error);
+     });
+  
   fetch("/prediction/", {
     method: "POST",
     headers: {
@@ -86,29 +109,7 @@ function addTransaction() {
     .catch((error) => {
       console.error("Error:", error);
     });
-  fetch('/update_chvalues/')
-    .then(response => response.json())
-    .then(data => {
-        
-        expenseAndIncomeChart.data.datasets[0].data = data.e;
-        expenseAndIncomeChart.data.datasets[1].data = data.i;
-        expenseAndIncomeChart.data.labels = data.c;
-        expenseAndIncomeChart.update();
-        // expensebycategory.data.labels = data.c;
-        console.log(data.c)
-        expensebycategory.data.datasets[0].data = data.e;
-        expensebycategory.data.labels = data.te;
-        
-        expensebycategory.update();
-        dates = data.c;
-        console.log(dates);
-        expenses = data.e;
-
-    })
-      
-    .catch(error => {
-        console.error('Error fetching data:', error);
-   });
+  
     
   return false;
   }
@@ -127,6 +128,8 @@ function addTransactionDOM(transaction) {
   //GET sign
   const sign = transaction.amount < 0 ? "-" : "+";
   const item = document.createElement("li");
+  const timestamp = Date.now();
+  item.dataset.timestamp = timestamp; // Store the timestamp as a data attribute
 
   //Add Class Based on Value
   item.classList.add(transaction.amount < 0 ? "minus" : "plus");
@@ -138,7 +141,10 @@ function addTransactionDOM(transaction) {
     })">x</button>
     `;
   list.appendChild(item);
+  // Store the timestamp in localStorage
+  localStorage.setItem(`transaction-${transaction.id}-timestamp`, timestamp); // 24 hours in milliseconds
 }
+
 
 // Update the balance income and expence
 // function updateValues() {
@@ -157,74 +163,121 @@ function addTransactionDOM(transaction) {
 //   money_plus.innerText = `$${income}`;
 //   money_minus.innerText = `$${expense}`;
 // }
-let selectedId = null;
+// let selectedId = null;
 
-function handleIncomeSourceChange(event) {
-  selectedId = event.target.value;
-  updateValues();
-}
+// function handleIncomeSourceChange(event) {
+//   selectedId = event.target.value;
+//   updateValues();
+// }
 
 
 
-function updateValues() {
-  console.log("Verified")
-  fetch("/initial_data/")
-    .then((response) => response.json())
-    .then((data) => {
-      const { income_sources, expenses } = data;
-      const selectedIncomeSource = income_sources.find(
-        (source) => source.id == selectedId
-      );
-      let selectedIncome = selectedIncomeSource
-        ? selectedIncomeSource.amount
-        : 0;
-      selectedIncome = Number(selectedIncome);
-      console.log(selectedIncome);
+// function updateValues() {
+//   console.log("Verified")
+//   fetch("/initial_data/")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       const { income_sources, expenses } = data;
+//       const selectedIncomeSource = income_sources.find(
+//         (source) => source.id == selectedId
+//       );
+//       let selectedIncome = selectedIncomeSource
+//         ? selectedIncomeSource.amount
+//         : 0;
+//       selectedIncome = Number(selectedIncome);
+//       console.log(selectedIncome);
 
-      const totalIncome = income_sources.reduce(
-        (acc, source) => acc + source.amount,
-        0
-      );
-      const totalExpense = expenses.reduce(
-        (acc, expense) => acc + expense.amount,
-        0
-      );
-      console.log(totalExpense);
+//       const totalIncome = income_sources.reduce(
+//         (acc, source) => acc + source.amount,
+//         0
+//       );
+//       const totalExpense = expenses.reduce(
+//         (acc, expense) => acc + expense.amount,
+//         0
+//       );
+//       console.log(totalExpense);
 
-      balance.innerText = `$${(selectedIncome - totalExpense).toFixed(2)}`;
-      money_plus.innerText = `$${selectedIncome.toFixed(2)}`;
-      money_minus.innerText = `$${totalExpense.toFixed(2)}`;
-      fetch("/updated_values/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCookie("csrftoken"), // Use your function to get the CSRF token
-        },
-        body: JSON.stringify({
-          selectedIncome: selectedIncome,
-          totalIncome: totalIncome,
-          totalExpense: totalExpense,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Values updated successfully in Django");
-        })
-        .catch((error) => {
-          console.error("Error updating values in Django:", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
+//       balance.innerText = `$${(selectedIncome - totalExpense).toFixed(2)}`;
+//       money_plus.innerText = `$${selectedIncome.toFixed(2)}`;
+//       money_minus.innerText = `$${totalExpense.toFixed(2)}`;
+//       fetch("/updated_values/", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           "X-CSRFToken": getCookie("csrftoken"), // Use your function to get the CSRF token
+//         },
+//         body: JSON.stringify({
+//           selectedIncome: selectedIncome,
+//           totalIncome: totalIncome,
+//           totalExpense: totalExpense,
+//         }),
+//       })
+//         .then((response) => response.json())
+//         .then((data) => {
+//           console.log("Values updated successfully in Django");
+//         })
+//         .catch((error) => {
+//           console.error("Error updating values in Django:", error);
+//         });
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// }
 
 //Remove Transaction by ID
 function removeTransaction(id) {
-  transactions = transactions.filter((transaction) => transaction.id !== id);
-  updateLocalStorage();
-  Init();
+  fetch(`/remove_transaction/${id}/`)
+        .then(response =>  response.json()) // Read the response as text
+           
+        .then(data => {
+          console.log("Sakar ")
+            // Update the transactions array and localStorage
+            balance.innerText = `$${data.balance}`;
+            money_plus.innerText = `$${data.income}`;
+            money_minus.innerText = `$${data.expense}`;
+            updateLocalStorage();
+            const transactionElement = document.getElementById(`transaction.id`);
+           if (transactionElement) {
+             transactionElement.remove();
+             }
+            // Find and remove the element from the DOM
+            
+            // Update the charts
+            // Init();
+        })
+        .catch(error => {
+          console.error('Error removing transaction:', error);
+      });
+      
+        fetch('/update_chvalues/')
+            .then(response => response.json())
+            .then(data => {
+          
+              expenseAndIncomeChart.data.datasets[0].data = data.e;
+              expenseAndIncomeChart.data.datasets[1].data = data.i;
+              expenseAndIncomeChart.data.labels = data.c;
+              expenseAndIncomeChart.update();
+              // expensebycategory.data.labels = data.c;
+              
+              expensebycategory.data.datasets[0].data = data.e;
+              expensebycategory.data.labels = data.te;
+              expensebycategory.update();
+              
+              dates = data.c;
+              expenses = data.e;
+          
+      })
+      
+        
+      .catch(error => {
+          console.error('Error fetching data:', error);
+     });
+
+        
+        
 }
+
 //last
 //update Local Storage Transaction
 function updateLocalStorage() {
@@ -241,7 +294,24 @@ function Init() {
 }
 
 // Init();
+document.addEventListener("DOMContentLoaded", function() {
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const keys = Object.keys(localStorage);
 
+  keys.forEach((key) => {
+    if (key.startsWith("transaction-")) {
+      const timestamp = localStorage.getItem(key);
+      if (Date.now() - timestamp > oneDayMs) {
+        const id = key.split("-")[1];
+        const transactionElement = document.getElementById(`transaction-${id}`);
+        if (transactionElement) {
+          transactionElement.remove();
+          localStorage.removeItem(key); // Remove the timestamp from localStorage
+        }
+      }
+    }
+  });
+});
 // form.addEventListener("submit", addTransaction);
 // document.querySelector(".btn-add").addEventListener("click", addTransaction);
 function generateIncomeFields() {
@@ -271,6 +341,8 @@ function submitForm(event) {
   if (urlParams.has("show_elements")) {
     document.querySelector(".header-main").style.display = "block";
     document.querySelector(".main-content").style.display = "block";
+    document.querySelector(".cls1").style.display = "block";
+    document.querySelector(".cls2").style.display = "block";
     document.querySelector(".initial-form-container").style.display = "none";
   }
   

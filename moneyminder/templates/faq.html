@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>FAQ</title>
+  <link rel="stylesheet" href="{% static 'nav.css' %}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container-faq {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+    .faq-box {
+      background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+    .faq-box:hover {
+      transform: translateY(-5px);
+    }
+    .faq-box h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .faq-box p {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-logo">
+                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
+                </a>
+
+                <!--  <div class="header-search-container">
+                    <input type="search" name="search" class="search-field" placeholder="Search" />
+
+                    <button class="search-btn">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </button> 
+                </div> -->
+                <div class="actions">
+                    <div class="header-user-actions">
+                        <button class="action-btn">
+                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                        </button>
+                        <button>
+                            <a class="home" href="index.html">Home</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                          <a class="emi-text" href="try.html">Calculator</a>
+                      </button>
+                      
+                        <a class="divider">|</a>
+                        <button>
+                            <a class="alert" href="custom.html">Custom Alert</a>
+                        </button>
+                        
+                          <a class="divider">|</a>
+                        <button>
+                            <a class="faq-text">FAQ</a>
+                        </button>
+                        <a class="divider">|</a>
+                         <!-- logout added -->
+                        <button>
+                            <a class="login-text">Logout</a>
+                        </button>
+                        <a class="divider">|</a>
+                        <!-- <button>
+                            <a class="signup-text">SignUp</a>
+                        </button>
+                        <button class="lang-button">
+                            <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
+                        </button> -->
+                        <div class="language-container">
+                            <a class="EN">Settings</a>
+                            <a class="down-arrow">⌄</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-bottom-navigation">
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="bag-handle-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="home-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn">
+                <ion-icon name="heart-outline"></ion-icon>
+            </button>
+
+            <button class="action-btn" data-mobile-menu-open-btn>
+                <ion-icon name="grid-outline"></ion-icon>
+            </button>
+        </div>
+    </header>
+
+<div class="container-faq">
+
+<h1>FAQ</h1>
+
+<div class="faq-box">
+  <h3>Q: What is an expense tracker?</h3>
+  <p>A: An expense tracker is a tool or application designed to help individuals or businesses monitor and manage their spending by recording and categorizing expenses.</p>
+</div>
+
+<div class="faq-box">
+  <h3>Q: How can an expense tracker benefit me?</h3>
+  <p>A: Using an expense tracker can provide insight into your spending habits, help you identify areas where you can save money, and assist in budgeting and financial planning.</p>
+</div>
+
+<div class="faq-box">
+  <h3>Q: Is it safe to use an expense tracker app?</h3>
+  <p>A: Most reputable expense tracker apps employ security measures such as encryption to protect your financial data. It's important to choose a trusted app from a reputable developer and to review its privacy policy.</p>
+</div>
+
+<!-- Add more FAQ boxes as needed -->
+
+</div> <!-- End of .container -->
+
+</body>
+</html>

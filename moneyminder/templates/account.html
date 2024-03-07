@@ -1,173 +1,221 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    {% comment %} <link rel="stylesheet" href="{% static 'style.css' %}"> {% endcomment %}
-    {% comment %} <link rel="stylesheet" href="{% static 'nav.css' %}"> {% endcomment %}
-    {% comment %} <link rel="stylesheet" href="{% static 'popup.css' %}"> {% endcomment %}
-    {% comment %} <link src="{% static 'vendor/chart.js/chart.umd.js' %}" rel="stylesheet"> {% endcomment %}
-    <style>
-        {% comment %} body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        .initial-form-container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .logo {
-            display: block;
-            margin: 0 auto;
-            max-width: 80%;
-            height: 10%;
-            width: 40%;
-            padding-top: 0;
-        }
-
-        #incomeFields div {
-            margin-bottom: 10px;
-        }
-
-        .header-main,
-        .main-content {
-            display: none;
-        } {% endcomment %}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome for icons -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .profile-details {
+      text-align: center;
+    }
+    .profile-details h1 {
+      margin: 0;
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .detail-box {
+      background-color: #ace7b9;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .detail-box1 {
+      background-color: #ace7b9;
+      border-radius: 3px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      position: relative;
+      text-decoration: none;
+    }
+    .detail-box1 a{
+      
+      text-decoration: none;
+    }
+    .detail-box p {
+      margin: 0;
+      color: #555;
+      font-size: 16px;
+    }
+    .detail-box input {
+      width: calc(100% - 30px); /* Consider padding */
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: #333;
+    }
+    .detail-box input:focus {
+      outline: none;
+    }
+    .edit-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .edit-icon:hover {
+      color: #0056b3;
+    }
+    .back-button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
-
 <body>
-    
-    {% comment %} <header>
-        <div class="header-main">
-            <div class="container">
-                <a href="#" class="header-logo">
-                    <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
-                </a> {% endcomment %}
-
-                <!--  <div class="header-search-container">
-                    <input type="search" name="search" class="search-field" placeholder="Search" />
-
-                    <button class="search-btn">
-                        <ion-icon name="search-outline"></ion-icon>
-                    </button> 
-                </div> -->
-                {% comment %} <div class="actions">
-                    <div class="header-user-actions">
-                        <button class="action-btn">
-                            <ion-icon name="person-outline" class="person-outlines"></ion-icon>
-                        </button>
-                        <button>
-                            <a class="home" href="index.html">Home</a>
-                        </button>
-                        
-                          <a class="divider">|</a>
-                        <button>
-                          <a class="emi-text" href="try.html">Calculator</a>
-                      </button>
-                      
-                        <a class="divider">|</a>
-                        <button>
-                            <a class="alert" href="{% url 'custom' %}">Custom Alert</a>
-                        </button>
-                        
-                          <a class="divider">|</a>
-                        <button>
-                            <a class="faq-text">FAQ</a>
-                        </button>
-                        <a class="divider">|</a>
-                        <button>
-                            <a class="login-text" href="{% url 'my_login' %}">Logout</a>
-                        </button>
-                        <a class="divider">|</a>
-                        <button>
-                            <a class="hello-msg">Hello, {{request.user}}</a>
-                        </button>
-                        <button class="lang-button">
-                            <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
-                        </button>
-                        <div class="language-container">
-                            <a class="EN" href="{% url 'updated_values' %}">Settings</a>
-                            <a class="down-arrow">⌄</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header> {% endcomment %}
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card card-body">
-                {% comment %} <a class="btn btn-warning" href="{% url 'user' %}"> &#8592; Back to Profile</a> {% endcomment %}
-                <hr>
-                <h3 style="text-align: center">Account Settings</h3>
-                <hr>
-                <img class="profile-pic" src="{{customer.profileimg.url}}" >
-            
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="card card-body">
-                
-                <div class="d-flex justify-content-center form_container">
-    
-                    <form method="POST" action="">
-                        {%csrf_token %}
-                        <div class="input-group mb-3">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fas fa-user"value = '{{ user.username }}'></i></span>
-                            </div>
-                            {{Form.username}}
-                        </div>
-                        <div class="input-group mb-2">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
-                            </div>
-                            {{Form.phone}}
-                        </div>
-                        <div class="input-group mb-2">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fas fa-key"value = '{{ user.email }}'></i></span>
-                            </div>
-                            {{Form.email}}
-                        </div>
-                        <div class="input-group mb-2">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fas fa-key" ></i></span>
-                            </div>
-                            {{Form.profileimg}}
-                        </div>
-    
-                           <div class="d-flex justify-content-center mt-3 login_container">
-                             <input class="btn login_btn" type="submit" value="Update">
-                           </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <button class="back-button" onclick="window.history.back()">Back</button>
+    <label for="profile-picture-input1">
+      {% if customer.profileimg %}
+      <img src="{{ customer.profileimg.url }}" alt="Profile Picture" class="profile-picture" id="profile-picture">
+      {% else %}
+      <img src="media/profile.jpg" alt="Profile Picture" class="profile-picture" id="profile-picture">
+      {% endif %}
+      
+    </label>
+    <!-- <input type="file" id="profile-picture-input" style="display: none;" accept="image/*"> -->
+    <form id="profile-picture-form" method="post" action="{% url 'upload' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+    <input type="file" id="profile-picture-input" name="profile_picture"  accept="image/*">
+    <button type="submit">Upload</button>
+  </form>
+    <div class="profile-details">
+      <h1>{{user.username}}</h1>
+      <div class="detail-box" id="emailBox" onclick="makeEditable('email')"> <!-- Added ID -->
+        <p>Email: <span id="email"> {{ user.email }} </span> <i class="fas fa-edit edit-icon" onclick="makeEditable('email')"></i></p>
+      </div>
+      <div class="detail-box" id="locationBox" onclick="makeEditable('location')"> <!-- Added ID -->
+        <p>Location: <span id="location">{{customer.location}}</span> <i class="fas fa-edit edit-icon" onclick="makeEditable('location')"></i></p>
+      </div>
+      <div class="detail-box" id="ageBox" onclick="makeEditable('age')"> <!-- Added ID -->
+        <p>Age: <span id="age">{{customer.age}}</span> <i class="fas fa-edit edit-icon" onclick="makeEditable('age')"></i></p>
+      </div>
+      <div class="detail-box" id="incomeBox""> <!-- Added ID -->
+        <p>Total Income: <span id="income">Rs {{total.total_income}}</span></p>
+      </div>
+      <div class="detail-box" id="expenseBox"> <!-- Added ID -->
+        <p>Monthly Expense: <span id="expense">Rs {{expense.exp_amt}}</span> </p>
+      </div>
+      <div class="detail-box" id="savingGoalBox"> <!-- Added ID -->
+        <p>Saving Goal: <span id="savingGoal">{{savinggoal.goal}}%</span></p>
+      </div>
+      <div class="detail-box" id="aboutBox" onclick="makeEditable('about')"> <!-- Added ID -->
+        <p>About: <span id="about">{{customer.info}}</span> <i class="fas fa-edit edit-icon" onclick="makeEditable('about')"></i></p>
+      </div>
+      <div class="detail-box1" id="savingGoalBox"> <!-- Added ID -->
+        <a href="{% url 'ccc' %}"><p>Edit the Income,Expense and Saving Goal </p></a>
+      </div>
     </div>
-    
-    
+  </div>
+
+  <script>
+    // document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+    //   const file = e.target.files[0];
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = function(event) {
+    //       document.getElementById('profile-picture').src = event.target.result;
+    //     }
+    //     reader.readAsDataURL(file);
+    //   }
+    // });
+//     document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+//     document.getElementById('profile-picture-form').submit();
+// });
+
+    function makeEditable(id) {
+      const element = $('#' + id);
+      const currentValue = element.text();
+
+      // Create an input element
+      const input = $('<input>',{
+        type : 'text',
+        value : currentValue
+      });
+      
+
+      // Replace the span with the input element
+      // element.innerHTML = ''; // Clear existing content
+      element.empty().append(input);
+
+      // Focus the input element
+      input.focus();
+
+      // Add event listener to save changes when pressing Enter
+      input.keypress(function(e) {
+        if (e.key === 'Enter') {
+            const newValue = input.val();
+            saveData(id, newValue);
+            // Replace the input element with a new span containing the updated value
+            const newSpan = $('<span>').text(newValue);
+            element.empty().append(newSpan);
+            // Re-enable editing on the box
+            element.click(function() {
+                makeEditable(id);
+            });
+        }
+    });
+
+      // Disable editing on this box while editing
+      element.off('click');
+    }
+
+    function saveData(key, value) {
+    $.ajax({
+        url: '/save_data/',
+        type: 'POST',
+        data: {
+            key: key,
+            value: value,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+            console.log('Data saved successfully');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error saving data:', error);
+        }
+    });
+}
+  </script>
 </body>
 </html>
-<style>
-	.profile-pic{
-		max-width: 200px;
-		max-height:200px;
-		margin: 0 auto;
-		border-radius: 50%;
-	}
-</style>
-
-<br>

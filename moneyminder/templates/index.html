@@ -1,21 +1,7 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-</head>
-<body>
-    <button class="btn btn-success"><a href="{% url 'custom' %}">Custom Alert
-        
-    </a> </button>
-    
-</body>
-</html> {% endcomment %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +18,7 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-
+ 
         .initial-form-container {
             max-width: 600px;
             margin: 20px auto;
@@ -40,7 +26,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
+ 
         .logo {
             display: block;
             margin: 0 auto;
@@ -49,35 +35,43 @@
             width: 40%;
             padding-top: 0;
         }
-
+ 
         #incomeFields div {
             margin-bottom: 10px;
         }
-
+ 
         .header-main,
         .main-content {
             display: none;
+ 
+        }
+        .main-content{
+            width: 550px;
         }
         #form {
             width: 30%;
             margin: 0 auto; 
         }
-        
+        .cls{
+            display:flex;
+            flex-direction: row;
+        }
+ 
     </style>
 </head>
-
+ 
 <body>
-    
+ 
     <header>
         <div class="header-main">
             <div class="container">
                 <a href="#" class="header-logo">
                     <img src='{% static 'assets/logo.png' %}' alt="LOGO" width="80" height="80" />
                 </a>
-
+ 
                 <!--  <div class="header-search-container">
                     <input type="search" name="search" class="search-field" placeholder="Search" />
-
+ 
                     <button class="search-btn">
                         <ion-icon name="search-outline"></ion-icon>
                     </button> 
@@ -90,20 +84,20 @@
                         <button>
                             <a class="home" href="/">Home</a>
                         </button>
-                        
+ 
                           <a class="divider">|</a>
                         <button>
                           <a class="emi-text" href="calculator">Calculator</a>
                       </button>
-                      
+ 
                         <a class="divider">|</a>
                         <button>
                             <a class="alert" href="{% url 'custom' %}">Custom Alert</a>
                         </button>
-                        
+ 
                           <a class="divider">|</a>
                         <button>
-                            <a class="faq-text">FAQ</a>
+                            <a class="faq-text" href='faq'>FAQ</a>
                         </button>
                         <a class="divider">|</a>
                         <button>
@@ -117,32 +111,32 @@
                             <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
                         </button>
                         <div class="language-container">
-                            <a class="EN" href="{% url 'updated_values' %}">Settings</a>
+                            <a class="EN" href="account">Settings</a>
                             <a class="down-arrow">⌄</a>
                         </div>
-
+ 
                     </div>
                 </div>
             </div>
         </div>
-
+ 
         <div class="mobile-bottom-navigation">
             <button class="action-btn" data-mobile-menu-open-btn>
                 <ion-icon name="menu-outline"></ion-icon>
             </button>
-
+ 
             <button class="action-btn">
                 <ion-icon name="bag-handle-outline"></ion-icon>
             </button>
-
+ 
             <button class="action-btn">
                 <ion-icon name="home-outline"></ion-icon>
             </button>
-
+ 
             <button class="action-btn">
                 <ion-icon name="heart-outline"></ion-icon>
             </button>
-
+ 
             <button class="action-btn" data-mobile-menu-open-btn>
                 <ion-icon name="grid-outline"></ion-icon>
             </button>
@@ -157,83 +151,93 @@
           <button type="button" onclick="closePopup()">OK</button>
       </div> {% endcomment %}
   </div>
-
-  <div class="row">
-    <div class="col-md-6" style="width: 40%;">
-        <h4>Expense and Income</h4>
-        <hr>
-        <canvas id="expenseAndIncomeChart" width="400" height="250"></canvas>
-    </div>
-    <div class="col-md-6 "style="width: 40%;">
-        <h4>Expense by Category</h4>
-        <hr>
-        <canvas id="expensebycategory" width="400" height="250"></canvas>
-    </div>
-  
-    <div class="main-content">
-      <div class="container">
-        
-        
-        <h4>Your Balance</h4>
-        <h1> <span id="balance"></span></h1>
-        
-        <div class="inc-exp-container">
-            <div>
-                <h4>Income</h4>
-                <p><span id="money-plus" class="money-plus"></span>
-                    
-                </p>
-            </div>
-            <div>
-                <h4>Expense</h4>
-                <p><span id="money-minus" class="money-minus"> </span>
-                    
-                </p>
-            </div>
-            <div>
-                <h4>Saving Goal</h4>
-                <p><span id="saving_goal" class="saving_goal"> </span>
-                    
-                </p>
-            </div>
+ 
+  <div class="cls">
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Expense and Income</h4>
+            <hr>
+            <canvas id="expenseAndIncomeChart" width="400" height="250"></canvas>
         </div>
-        
-        <h3>History</h3>
-        <ul id="list" class="list">
-            <!-- <li class="minus">
-              Cash <span>-$400</span
-              ><button class="delete-btn">x</button>
-            </li> -->
-        </ul>
+ 
     </div>
-        
-   
-        
-    
-        {% comment %} <form id="form"> {% endcomment %}
-            <div id="form">
-                <h3>Add New Transaction</h3>
-            <div class="form-control">
-                <label for="text">Text</label>
-                <input type="text" name = "text1" id="text" placeholder="Enter Text...."/>
+    <div class="row">
+        <div class="col-md-12 main-content">
+            <div class="container">
+                <h4>Your Balance</h4>
+                <h1><span id="balance"></span></h1>
+                <div class="inc-exp-container">
+                    <div>
+                        <h4>Income</h4>
+                        <p><span id="money-plus" class="money-plus"></span></p>
+                    </div>
+                    <div>
+                        <h4>Expense</h4>
+                        <p><span id="money-minus" class="money-minus"></span></p>
+                    </div>
+                    <div>
+                        <h4>Saving Goal</h4>
+                        <p>{{saving_amount}}</p>
+                    </div>
+                </div>
+                <h3>History</h3>
+                <ul id="list" class="list">
+                    <!-- <li class="minus">
+                          Cash <span>-$400</span
+                          ><button class="delete-btn">x</button>
+                        </li> -->
+                </ul>
             </div>
-            <div class="form-control">
-                <label for="amount">Amount <br> (negative - expense ,positive - income )</label>
-                <input type="number" name = "amount1" id="amount" placeholder="Enter amount..."> 
+            {% comment %} <form id="form"> {% endcomment %}
+                <div id="form">
+                    <h3>Add New Transaction</h3>
+                <div class="form-control">
+                    <label for="text">Text</label>
+                    <input type="text" name = "text1" id="text" placeholder="Enter Text...."/>
+                </div>
+                <div class="form-control">
+                    <label for="amount">Amount <br> (negative - expense ,positive - income )</label>
+                    <input type="number" name = "amount1" id="amount" placeholder="Enter amount..."> 
+                </div>
+                <button type="button" class="btn-add" onclick='addTransaction()'>Add transaction</button>
             </div>
-            <button type="button" class="btn-add" onclick='addTransaction()'>Add transaction</button>
+            {% comment %} </form> {% endcomment %}
         </div>
-        {% comment %} </form> {% endcomment %}
-    </div>
-    </div>
+ 
+ 
+ 
+ 
+        </div>
+        <div class="cls2">
+        <div class="row">
+ 
+            <div class="col-md-8">
+                <h4>Expense by Category</h4>
+                <hr>
+                <canvas id="expensebycategory" width="400" height="250"></canvas>
+            </div>
+ 
+        </div>
     
-</div>
-    
+        </div>
+    </div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     {% if is_first_login %}
     <div class="initial-form-container">
         <script>
         document.querySelector(".main-content").style.display = "none";
-
+ 
         </script>
         <img class="logo" src="{% static 'assets/logo.png' %}">
         <h2>Welcome to Money Minder! Let's set up your initial details.</h2>
@@ -244,7 +248,7 @@
             <div id="incomeFields">
                 <div id="incomeContainer"></div>
             </div>
-
+ 
             <label for="monthlyExpenses">Monthly Expense:</label>
             <input type="number" name="exp_amt" id="monthlyExpenses" min="0" placeholder="Enter Monthly Expenses" required />
             <!-- End of added portion -->
@@ -259,11 +263,13 @@
     <script>
         document.querySelector(".main-content").style.display = "block";
         document.querySelector(".header-main").style.display = "block";
-
+        document.querySelector(".cls1").style.display = "block";
+        document.querySelector(".cls2").style.display = "block";
+ 
     </script>
     {% endif %}
-
-
+ 
+ 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -282,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('money-minus').innerText = data.expense_amount;
             updateBalance();
         }); 
-
+ 
 }); {% endcomment %}
 {% comment %} function updateBalance() {
     var incomeAmount = parseFloat(document.getElementById('money-plus').innerText);
@@ -293,11 +299,11 @@ document.addEventListener("DOMContentLoaded", function() {
 updateBalance(); {% endcomment %}
 </script>
 <script src="{% static 'js/script.js' %}"></script>
-
-
+ 
+ 
     <script>
-       
-        
+ 
+ 
         var ctx = document.getElementById('expenseAndIncomeChart').getContext('2d');
         var expenseAndIncomeChart = new Chart(ctx, {
         type: 'line',
@@ -325,7 +331,7 @@ updateBalance(); {% endcomment %}
             }
         }
     });
-
+ 
         var ctx2 = document.getElementById('expensebycategory').getContext('2d');
         var expensebycategory  = new Chart(ctx2, {
             type: 'pie',
@@ -363,26 +369,26 @@ updateBalance(); {% endcomment %}
                 }
             }
         });    
-    
+ 
         var dates = [
-            
+ 
         ];
-    
+ 
         var expenses = [
-            
+ 
         ];
-    
+ 
         // Combine dates and expenses into datasets
         var data = [];
         for (var i = 0; i < dates.length; i++) {
             data.push({x: dates[i], y: expenses[i]});
         }
-    
+ 
         // Sort data by date
         data.sort(function(a, b) {
             return new Date(a.x) - new Date(b.x);
         });
-    
+ 
         // Split sorted data back into dates and expenses
         var sortedDates = [];
         var sortedExpenses = [];
@@ -390,8 +396,8 @@ updateBalance(); {% endcomment %}
             sortedDates.push(data[i].x);
             sortedExpenses.push(data[i].y);
         }
-    
-        
+ 
+ 
         {% comment %} var ctx = document.getElementById('expenseAndIncomeChart').getContext('2d');
         var expenseAndIncomeChart = new Chart(ctx, {
             type: 'line',
@@ -413,8 +419,39 @@ updateBalance(); {% endcomment %}
                 }
             } {% endcomment %}
         {% comment %} }); {% endcomment %}
-    
+            
+    fetch('/update_chvalues/')
+    .then(response => response.json())
+    .then(data => {
+        
+        expenseAndIncomeChart.data.datasets[0].data = data.e;
+        expenseAndIncomeChart.data.datasets[1].data = data.i;
+        expenseAndIncomeChart.data.labels = data.c;
+        expenseAndIncomeChart.update();
+        // expensebycategory.data.labels = data.c;
+        
+        expensebycategory.data.datasets[0].data = data.e;
+        expensebycategory.data.labels = data.te;
+        expensebycategory.update();
+        
+        dates = data.c;
+        expenses = data.e;
+        
+    })
+      
+    .catch(error => {
+        console.error('Error fetching data:', error);
+   });
+   fetch("/transaction/")
+      .then((response) => response.json())
+      .then((data) => {
+        // Update the balance based on the response
+       
+        balance.innerText = `$${data.balance}`;
+        money_plus.innerText = `$${data.income}`;
+        money_minus.innerText = `$${data.expense}`;
+      });
 </script>
 </body>
-
+ 
 </html>

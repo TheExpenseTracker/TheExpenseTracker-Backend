@@ -1,17 +1,16 @@
 from django.shortcuts import render , redirect
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse, HttpResponseNotFound
 from django.http import HttpResponseRedirect , JsonResponse
-from django.views import View
 from .forms import CreateUserForm, LoginForm , CustomerForm
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User , auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.db.models import Sum
 from django.core.mail import send_mail
 from datetime import timedelta , datetime
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.urls import reverse
 import json
@@ -37,6 +36,7 @@ def index(request):
     income__amount = Income_sources.objects.filter(user=request.user)
     exp_amount = monthly_expense.exp_amt if monthly_expense else 0
     total = sum(p.amount for p in income__amount)
+    # Total.objects.create(user=user , total_income = total)
     
     updated_balance = float(total) - exp_amount
     
@@ -106,7 +106,7 @@ def my_login(request):
             password = request.POST.get('password')
 
             user = authenticate(request, username=username, password=password)
-            Customer.objects.create(user = user , username = username , email=user.email , phone = None, profileimg=None , )
+            Customer.objects.create(user = user , username = username , email=user.email , phone = None, profileimg=None ,info = "This is my info" ,age = 18 , location = 'Ktm,Nepal')
 
             if user is not None:
                 # # custom alert section
@@ -139,40 +139,32 @@ def logout(request):
 
 def account(request):
     user= request.user
+    total = Total.objects.filter(user=user).first()
+    expense= Monthly_Expense.objects.filter(user=user).first()
+    savinggoal = saving_goal.objects.filter(user=user).first()
     customer = Customer.objects.filter(user=user).first()
-    print(customer)
+    # customer = Customer.objects.filter(user=user).first()
+    # print(customer)
 
-    if request.method == "POST":
+    # if request.method == "POST":
 
-        form = CustomerForm(request.POST)   
+    #     form = CustomerForm(request.POST)   
 
-        if form.is_valid():
+    #     if form.is_valid():
             
-            form.save()
+    #         form.save()
 
-            return redirect("home")
+    #         return redirect("home")
         
-    else:
-        form = CustomerForm()
+    # else:
+    #     form = CustomerForm()
 
-    context = {'Form':form , 'customer':customer}
+    context = { 'user':user , 'total':total , 'expense':expense , 'savinggoal':savinggoal , 'customer':customer}
 
     return render(request, 'account.html', context=context)
             
 def custom(request):
-    user = request.user
-    
-    if request.method =='POST':
-        custom_text = request.POST['alertMessage']
-        date = request.POST['alertDate']
-        cus = custom_alert.objects.create(user=user , custom_text = custom_text , date = date)
-        cus.save()
-        date_obj = datetime.strptime(date, "%Y-%m-%d")
-        email = user.email
-
-    
-        
-        allert(email , date_obj , custom_text)
+   
     return render(request , 'custom.html')
 def allert(user_email , alert , custom_text):
     
@@ -188,8 +180,50 @@ def allert(user_email , alert , custom_text):
             from_email = "money.minder077@gmail.com"  # Replace with your email
             recipient_list = [user_email]  # Replace with the recipient's email
             send_mail(subject, message, from_email, recipient_list)
+def customalert(request):
+    user = request.user
+    
+    if request.method =='POST':
+        custom_text = request.POST['alertMessage']
+        date = request.POST['alertDate']
+        cus = custom_alert.objects.create(user=user , custom_text = custom_text , date = date)
+        cus.save()
+        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        email = user.email
 
+    
+        
+        allert(email , date_obj , custom_text)
+    return render(request , 'customemi.html')
 
+def faq(request):
+    return render(request , 'faq.html')
+def emialert(request):
+    
+    user = request.user
+    if request.method == 'POST':
+        date = request.POST['emiDate']
+        email = user.email
+        emi_alert(email , date)
+    return render(request , 'emialert.html')
+
+def emi_alert(email , date):
+
+    today = timezone.now().date()
+    today_d = today.day
+    # today_day =datetime.strptime(today, '%Y-%m-%d')
+    date_obj = datetime.strptime(date, '%Y-%m-%d')
+    date_day = date_obj.day
+    alert_date = date_day-5
+    if today_d >= alert_date:
+        
+        subject = "Reminder: Your  EMI paying date is approaching"
+        message = f"You EMI due at approaching , Please be prepared"
+        from_email = 'money.minder077@gmail.com'  # Replace with your email
+        recipient_list = [email]  # Replace with the recipient's email
+        send_mail(subject, message, from_email, recipient_list)
+        # Send alert here
+        
 def allert_contd(user_email , alert , custom_text):
     
      alert_date = alert - timedelta(days=5)
@@ -204,25 +238,6 @@ def allert_contd(user_email , alert , custom_text):
             from_email = "sakarbhandari100000@gmail.com"  # Replace with your email
             recipient_list = [user_email]  # Replace with the recipient's email
             send_mail(subject, message, from_email, recipient_list)
-
-
-# def saving_alert(user_email , saving_goal):
-#     # user = Profile.objects.all()
-#     subject = "Saving Goal Alert"
-#     message = f"Your Saving goal os {saving_goal} is approaching, You need to spend less"
-#     from_email = '077bct032.sakar@sagarmatha.edu.np'
-#     recipient_list = [user_email]
-#     send_mail(subject, message, from_email, recipient_list)
-# def saving_goal_status(userinfo):
-#     saving_target = userinfo.saving_goals
-#     if saving_target<100:
-#         saving_alert(userinfo.user.email, userinfo.saving_goals)
-
-
-
-
-
-            
 
 def save_income(request):
 
@@ -252,12 +267,16 @@ def save_income(request):
             source = request.POST.get(f'incomeSource{i}')
             amount = request.POST.get(f'incomeAmount{i}')
             Income_sources.objects.create(user = user , source=source, amount=amount)
+        total_amount = Income_sources.objects.filter(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        print(total_amount)
+        # Get or create the Total object for the user
+        Total.objects.create(user=user , total_income = total_amount)
+
+       
             
         return HttpResponseRedirect(reverse('home') + '?show_elements=true')
     
     return render(request, 'custom.html')
-
-
 
 def update_values(request):
     user = request.user
@@ -273,22 +292,10 @@ def update_values(request):
 
     return render(request , 'update.html',{'count':count,'c':c , 'd':d})
 
-
 def count_sources_for_user(user):
     
     sources_count = Income_sources.objects.filter(user=user).count()
     return sources_count
-# def update_income_amount_view(request):
-#     user = request.user
-#     income_source_id = request.GET.get('income_source_id')
-#     income_source = Income_sources.objects.filter(id=income_source_id, user=request.user).first()
-#     income_amount = income_source.amount if income_source else None
-    
-#     expense_source = Monthly_Expense.objects.get(user=user)
-#     expense_amount = expense_source.exp_amt
-#     return JsonResponse({'income_amount': income_amount , 'expense_amount':expense_amount})
-
-
 
 def add_transaction_view(request):
     if request.method == 'POST':
@@ -311,17 +318,18 @@ def add_transaction_view(request):
             mexpp.save()
         mexpp.exp_amt += float(abs(transactions.amount)) if transactions.amount < 0 else 0 
         mexpp.save()
-        iexp = Income_sources.objects.filter(user=request.user).first()
+        iexp = Total.objects.filter (user=request.user).first()
         
+        if iexp is not None:
 
-        iexp.amount+= transactions.amount if transactions.amount > 0 else 0 
-        iexp.save()
-        balance = float(iexp.amount )- mexpp.exp_amt
+            iexp.total_income+= float(transactions.amount) if transactions.amount > 0 else 0 
+            iexp.save()
+        balance = float(iexp.total_income )- mexpp.exp_amt
         # saving = saving_goal.objects.filter(user=request.user).first()
         # savi = (saving.goal/100)* float(iexp.amount)
         # saving.goal = (savi/float(iexp.amount))
         # saving.save()
-        
+    
 
 
         return JsonResponse({
@@ -331,78 +339,33 @@ def add_transaction_view(request):
                 'amount': transaction.amount
             },
             'balance': balance,
-            'income': iexp.amount,
+            'income': iexp.total_income,
             'expense': mexpp.exp_amt,
             # 'saving':saving.goal
         })
-
-    return JsonResponse({'error': 'Invalid request method'})
-
-
-def init_data(request):
-    user = request.user
-    income_sources = Income_sources.objects.filter(user= user)
-    income_source_data = [{'id': source.id ,'amount':source.amount} for source in income_sources]
-    expenses = Monthly_Expense.objects.filter(user =user)
-    expenses_data = [{'amount':expense.exp_amt} for expense in expenses]
-    data = {
-        'income_sources':income_source_data,
-        'expenses':expenses_data,
-    }
-    return JsonResponse(data)
-
-
-def updated_values(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        selected_income = data.get("selectedIncome")
-        total_income = data.get("totalIncome")
-        total_expense = data.get("totalExpense")
-
-        # Store the updated values in the session
-        request.session['selected_income'] = selected_income
-        request.session['total_income'] = total_income
-        request.session['total_expense'] = total_expense
-
-        return JsonResponse({"status": "success"})
-    else:
-        return JsonResponse({"status": "error", "message": "Invalid request method"})
     
+    mexp = Monthly_Expense.objects.filter(user = request.user)
+    mexpp = mexp.first()
+    iexp = Total.objects.filter (user=request.user).first()
+    balance = float(iexp.total_income )- mexpp.exp_amt
+
+    return JsonResponse({'balance': balance,
+            'income': iexp.total_income,
+            'expense': mexpp.exp_amt})
 
 def calculator(request):
     return render(request , 'try.html')
 
 def chupdate_values(request):
-    e=[]
-    i=[]
-    c=[]
-    te=[]
 
-    user = request.user
+
+    user = request.user.id
     
     transaction = Transaction.objects.filter(user=user).order_by('created_at')
-    if not transaction.exists():
-        e = [0]
-        i = [0]
-        c = []
-        te = []
-    else:
-        for t in transaction:
-            es = t.amount if t.amount< 0 else 0
-            e.append(es)
-            
-            
-            ic = float(t.amount if t.amount> 0 else 0)
-            i.append(ic)
-
-            cr = t.created_at
-            
-            
-            c.append(cr)
-
-            tex = t.text
-            te.append(tex)
-
+    e = [0] if not transaction.exists() else [t.amount if t.amount < 0 else 0 for t in transaction]
+    i = [0] if not transaction.exists() else [float(t.amount if t.amount > 0 else 0) for t in transaction]
+    c = [] if not transaction.exists() else [t.created_at.strftime('%Y-%m-%d') for t in transaction]
+    te = [] if not transaction.exists() else [t.text for t in transaction]
             
             
 
@@ -414,4 +377,72 @@ def chupdate_values(request):
     }
     return JsonResponse(context)
         
+def remove_transaction(request, transaction_id):
     
+        try:
+            transaction = Transaction.objects.get(user=request.user, pk=transaction_id)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Transaction not found")
+        total_expense = Monthly_Expense.objects.filter(user=request.user).first()
+        total_income = Total.objects.filter(user=request.user).first()
+
+
+        if transaction.amount < 0:
+            # Subtract from expenses
+            if total_expense:
+                total_expense.exp_amt -= abs(transaction.amount)
+                total_expense.save()
+        if transaction.amount > 0:
+            # Subtract from income
+            if total_income:
+                total_income.total_income -= float(transaction.amount)
+                total_income.save()
+        balance = 0
+        if total_income and total_expense:
+            balance = total_income.total_income - total_expense.exp_amt
+        
+        # Delete the transaction
+        transaction.delete()
+
+        # Get the updated transactions
+        transactions = Transaction.objects.filter(user=request.user).values()
+
+        return JsonResponse({
+            'income' : total_income.total_income,
+            'expense' : total_expense.exp_amt,
+            'balance' : balance,
+        })
+  
+
+def upload(request):
+    if request.method=="POST":
+        customer = Customer.objects.get(user=request.user)
+        customer.profileimg = request.FILES['profile_picture']
+        customer.save()
+        return HttpResponseRedirect('/account')  # Redirect to the account page
+    return render(request, 'account.html')  # Render the account page initially
+
+def save_data(request):
+    user = request.user
+    customer = Customer.objects.filter(user=user).first()
+    if request.method=="POST":
+        key = request.POST.get('key')
+        value = request.POST.get('value')
+        if key == 'email':
+            user.email = value
+            user.save()
+        elif key =='location':
+            customer.location = value
+            customer.save()
+        elif key =='age':
+            customer.age = value
+            customer.save()
+        elif key =='age':
+            customer.age = value
+            customer.save()
+        elif key =='about':
+            customer.info = value
+            customer.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+        
