@@ -21,5 +21,6 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('save_data/', views.save_data, name='save_data'),
     path('ccc/', views.update_values, name='ccc'),
+    path('history/', views.get_history, name="history"),
     # path('ccc/', views.ccc, name='ccc'),
 ]

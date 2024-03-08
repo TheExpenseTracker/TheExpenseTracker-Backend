@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
 import json
+from datetime import date
 # Create your views here.
 
 @login_required(login_url='my_login')
@@ -390,7 +391,9 @@ def remove_transaction(request, transaction_id):
         if transaction.amount < 0:
             # Subtract from expenses
             if total_expense:
-                total_expense.exp_amt -= abs(transaction.amount)
+                print("*"*100)
+                print(transaction.amount)
+                total_expense.exp_amt -= abs(float(transaction.amount))
                 total_expense.save()
         if transaction.amount > 0:
             # Subtract from income
@@ -446,3 +449,9 @@ def save_data(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
         
+
+def get_history(request):
+    user = request.user
+    history = Transaction.objects.filter(user=user, created_at__gte=date.today())
+    data = [{"id":data.id, "text":data.text, "amount":data.amount} for data in history]
+    return JsonResponse(data=data, safe=False, status=200)

@@ -4,6 +4,38 @@ const money_plus = document.getElementById("money-plus");
 const money_minus = document.getElementById("money-minus");
 let transactions = [];
 
+fetch(/history/)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(userData => {
+    console.log('User Data:', userData);
+    // Process the retrieved user data
+    userData.forEach(transaction => {
+      const sign = transaction.amount < 0 ? "-" : "+";
+      const item = document.createElement("li");
+      const timestamp = Date.now();
+      item.dataset.timestamp = timestamp; // Store the timestamp as a data attribute
+
+      //Add Class Based on Value
+      item.classList.add(transaction.amount < 0 ? "minus" : "plus");
+      item.id=transaction.id;
+      item.innerHTML = `
+        ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
+        <button class="delete-btn" onclick="removeTransaction(${
+          transaction.id
+        })">x</button>
+        `;
+      list.appendChild(item);
+      });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -133,7 +165,7 @@ function addTransactionDOM(transaction) {
 
   //Add Class Based on Value
   item.classList.add(transaction.amount < 0 ? "minus" : "plus");
-
+  item.id=transaction.id;
   item.innerHTML = `
     ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
     <button class="delete-btn" onclick="removeTransaction(${
@@ -231,13 +263,12 @@ function removeTransaction(id) {
         .then(response =>  response.json()) // Read the response as text
            
         .then(data => {
-          console.log("Sakar ")
             // Update the transactions array and localStorage
             balance.innerText = `$${data.balance}`;
             money_plus.innerText = `$${data.income}`;
             money_minus.innerText = `$${data.expense}`;
             updateLocalStorage();
-            const transactionElement = document.getElementById(`transaction.id`);
+            const transactionElement = document.getElementById(id);
            if (transactionElement) {
              transactionElement.remove();
              }
