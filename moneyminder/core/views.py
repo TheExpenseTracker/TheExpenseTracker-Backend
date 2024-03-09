@@ -46,9 +46,10 @@ def index(request):
     # total_expense = request.session.get('total_expense')
     saving_query = saving_goal.objects.filter(user = request.user)
     saving = saving_query.first()
+    totalincome = Total.objects.filter(user = user).first()
     s= saving.goal if saving else None
     if s:
-        saving_amount = (s/100)*float(total)
+        saving_amount = (s/100)*totalincome.total_income
     else :
         saving_amount=0
 
@@ -326,6 +327,8 @@ def add_transaction_view(request):
             iexp.total_income+= float(transactions.amount) if transactions.amount > 0 else 0 
             iexp.save()
         balance = float(iexp.total_income )- mexpp.exp_amt
+        svg = saving_goal.objects.filter(user = request.user ).first()
+        svg_amt = iexp.total_income*(svg.goal/100.00)
         # saving = saving_goal.objects.filter(user=request.user).first()
         # savi = (saving.goal/100)* float(iexp.amount)
         # saving.goal = (savi/float(iexp.amount))
@@ -342,6 +345,7 @@ def add_transaction_view(request):
             'balance': balance,
             'income': iexp.total_income,
             'expense': mexpp.exp_amt,
+            'svg_amt': svg_amt,
             # 'saving':saving.goal
         })
     

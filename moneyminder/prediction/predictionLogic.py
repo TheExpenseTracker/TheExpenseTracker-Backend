@@ -39,9 +39,10 @@ def calculate_percentage_spent(entered_amount, current_user):
     c_amount= abs(entered_amount) + amount_db
     # saving_goal = Income.objects.get(user=current_user).saving_goal
     sg = saving_goal.objects.filter(user = current_user).first()
+    totalincome = Total.objects.filter(user = current_user).first()
     income__amount = Income_sources.objects.filter(user=current_user)
     total = sum(p.amount for p in income__amount)
-    saving_amount = (sg.goal/100)*float(total)
+    saving_amount = (sg.goal/100)*totalincome.total_income
     saving_goals = saving_amount
     #calculate percentage
     percent_spent = c_amount/ saving_goals * 100

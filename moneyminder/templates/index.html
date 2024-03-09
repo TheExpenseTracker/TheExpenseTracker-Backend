@@ -152,7 +152,7 @@
       </div> {% endcomment %}
   </div>
  
-  <div class="cls">
+  <div class="cls" >
     <div class="row">
         <div class="col-md-8">
             <h4>Expense and Income</h4>
@@ -177,7 +177,7 @@
                     </div>
                     <div>
                         <h4>Saving Goal</h4>
-                        <p>{{saving_amount}}</p>
+                        <p><span id="saving" class="saving">{{ saving_amount }}</span></p>
                     </div>
                 </div>
                 <h3>History</h3>
@@ -208,7 +208,7 @@
  
  
         </div>
-        <div class="cls2">
+        <div class="cls2" >
         <div class="row">
  
             <div class="col-md-8">
@@ -237,6 +237,8 @@
     <div class="initial-form-container">
         <script>
         document.querySelector(".main-content").style.display = "none";
+    //     document.querySelector(".cls").style.display = "none";
+    // document.querySelector(".cls2").style.display = "none";
  
         </script>
         <img class="logo" src="{% static 'assets/logo.png' %}">
@@ -263,9 +265,9 @@
     <script>
         document.querySelector(".main-content").style.display = "block";
         document.querySelector(".header-main").style.display = "block";
-        document.querySelector(".cls1").style.display = "block";
-        document.querySelector(".cls2").style.display = "block";
- 
+        // document.querySelector(".cls").style.display = "block";
+        // document.querySelector(".cls2").style.display = "block";
+        
     </script>
     {% endif %}
  
@@ -276,6 +278,8 @@ document.addEventListener("DOMContentLoaded", function() {
     if (urlParams.has('show_elements')) {
       document.querySelector(".header-main").style.display = "block";
       document.querySelector(".main-content").style.display = "block";
+    //   document.querySelector(".cls").style.display = "block";
+    // document.querySelector(".cls2").style.display = "block";
       document.querySelector(".initial-form-container").style.display = "none";
     }
   }); 
@@ -450,6 +454,7 @@ updateBalance(); {% endcomment %}
         balance.innerText = `$${data.balance}`;
         money_plus.innerText = `$${data.income}`;
         money_minus.innerText = `$${data.expense}`;
+        saving1.innerText = `$${data.svg_amt}`;
       });
 </script>
 </body>

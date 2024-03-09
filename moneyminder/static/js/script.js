@@ -2,6 +2,7 @@ const list = document.getElementById("list");
 const balance = document.getElementById("balance");
 const money_plus = document.getElementById("money-plus");
 const money_minus = document.getElementById("money-minus");
+const saving1 = document.getElementById("saving");
 let transactions = [];
 
 fetch(/history/)
@@ -79,6 +80,7 @@ function addTransaction() {
         balance.innerText = `$${data.balance}`;
         money_plus.innerText = `$${data.income}`;
         money_minus.innerText = `$${data.expense}`;
+        saving1.innerText = `$${data.svg_amt}`;
         // saving_goal.innerText = `$${data.saving}`;
         
 

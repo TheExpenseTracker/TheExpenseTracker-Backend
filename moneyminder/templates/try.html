@@ -61,36 +61,42 @@
           </div> -->
           <div class="actions">
               <div class="header-user-actions">
-                  <button class="action-btn">
-                      <ion-icon name="person-outline" class="person-outlines"></ion-icon>
-                  </button>
-                  <button>
+                <button class="action-btn">
+                    <ion-icon name="person-outline" class="person-outlines"></ion-icon>
+                </button>
+                <button>
                     <a class="home" href="/">Home</a>
                 </button>
-                
-                  <a class="divider">|</a>
-                  <button>
-                      <a class="emi-text"href="{% url 'calculator'%}">Calculator</a>
-                  </button>
-                  <a class="divider">|</a>
-                  <button>
-                    <a class="alert" href="custom.html">Custom Alert</a>
-                </button>
-                
-                  <a class="divider">|</a>
-                  <button>
-                      <a class="faq-text">FAQ</a>
-                  </button>
-                  <a class="divider">|</a>
-                        <button>
-                            <a class="login-text">Logout</a>
-                        </button>
-                        <a class="divider">|</a>
-                  <div class="language-container">
-                      <a class="EN">Settings</a>
-                      <a class="down-arrow">⌄</a>
-                  </div>
 
+                  <a class="divider">|</a>
+                <button>
+                  <a class="emi-text" href="calculator">Calculator</a>
+              </button>
+
+                <a class="divider">|</a>
+                <button>
+                    <a class="alert" href="{% url 'custom' %}">Custom Alert</a>
+                </button>
+
+                  <a class="divider">|</a>
+                <button>
+                    <a class="faq-text" href='faq'>FAQ</a>
+                </button>
+                <a class="divider">|</a>
+                <button>
+                    <a class="login-text" href="{% url 'my_login' %}">Logout</a>
+                </button>
+                <a class="divider">|</a>
+                <button>
+                    <a class="hello-msg" href='account'>Hello, {{request.user}}</a>
+                </button>
+                <button class="lang-button">
+                    <ion-icon name="globe-outline" class="globe-oulines"></ion-icon>
+                </button>
+                <div class="language-container">
+                    <a class="EN" href="account">Settings</a>
+                    <a class="down-arrow">⌄</a>
+                </div
               </div>
           </div>
       </div>
